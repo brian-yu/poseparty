@@ -1,5 +1,6 @@
 import ml5 from 'ml5';
 
+import { getOrCreateRoomID } from './api_utils';
 import { setupTwilio } from './twilio_utils';
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 import { SOCKET_HOST } from './constants';
@@ -7,23 +8,19 @@ import { SOCKET_HOST } from './constants';
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
 
-const urlParams = new URLSearchParams(window.location.search);
-if (!urlParams.has('id')) {
-  const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-  urlParams.set('id', hash);
-  window.location.search = urlParams.toString();
-}
-const ROOM_ID = urlParams.get('id');
+const ROOM_ID = getOrCreateRoomID();
 
+// TODO: fix bug where sometimes video feed doesnt load correctly.
 document.addEventListener("DOMContentLoaded", run);
 
 const GameStateEnum = Object.freeze({"Waiting":1, "Playing":2, "Finished":3})
-
 const STATE = {
   gameState: GameStateEnum.Waiting,
-  playerName: 'Loading...',
+  playerName: null,
   currentScore: 0, // and other scoring metadata
   currentRound: 0,
+  allScores: {},
+  totalScores: {},
   imageName: null,
   imagePoseVector: null,
 }
@@ -33,12 +30,25 @@ setupTwilio(ROOM_ID, STATE);
 
 class GameClient {
   constructor(SOCKET_HOST, room) {
+    this.room = room;
     this.ws = new WebSocket(SOCKET_HOST);
+    
     this.ws.onmessage = event => {
       data = JSON.parse(event.data);
       this.handleMessage(data);
+    };
+
+    this.ws.onopen = () => {
+      this.join();
+    };
+
+    this.ws.onerror = (err) => {
+      console.error('Error connecting to game socket server:', err);
     }
-    this.room = room;
+
+    this.ws.onclose = () => {
+      console.log('Connection with game socket server closed.');
+    }
   }
 
   join() {
@@ -52,9 +62,9 @@ class GameClient {
     this.send({ action: 'SET_READY' })
   }
 
-  finishRound(score) {
+  finishRound() {
     this.send({
-      score,
+      score: STATE.currentScore,
       action: 'FINISH_ROUND',
     })
   }
@@ -71,9 +81,30 @@ class GameClient {
     switch (data.action) {
       case 'START_ROUND':
         console.log('STARTING ROUND!', data);
+        if (STATE.gameState === GameStateEnum.Finished) {
+          console.error('invalid game state transition');
+          return;
+        } else if (STATE.gameState === GameStateEnum.Waiting) {
+          STATE.gameState = GameStateEnum.Playing;
+        }
+        STATE.currentRound = data.currentRound;
+        STATE.currentScore = 0;
+        STATE.allScores = data.prevScores;
+        STATE.totalScores = STATE.allScores.map((arr) => arr.reduce((a,b) => a + b, 0)); // SUM
+        // TODO: call function to display new scores
+        // Update images/pose
+        // Start new round animation
+        setTimeout(this.finishRound(), data.roundDuration*100);
         break;
       case 'END_GAME':
         console.log('ENDING GAME!', data);
+        if (STATE.gameState !== GameStateEnum.Playing) {
+          console.error('invalid game state transition');
+          return;
+        }
+        STATE.gameState = GameStateEnum.Finished;
+        STATE.allScores = data.prevScores;
+        STATE.totalScores = STATE.allScores.map((arr) => arr.reduce((a,b) => a + b, 0)); // SUM
         break;
       default:
         console.log('Unrecognized game action!', data);
@@ -83,8 +114,6 @@ class GameClient {
 
 const GAME_CLIENT = new GameClient(SOCKET_HOST, ROOM_ID);
 console.log('Game created');
-// if (w)
-// GAME_CLIENT.join();
 
 /*
 TODO:
@@ -141,10 +170,8 @@ function run() {
   const drawImageIntoCanvas = (img, pose, canvas) => {
     const ctx = canvas.getContext('2d');
 
+    // TODO: scale image and pose so that proportions are not distorted
     ctx.drawImage(img, 0, 0, 640, 480);
-
-    // ctx.drawImage(img, 0, 0, img.width,    img.height,     // source rectangle
-    //                  0, 0, canvas.width, canvas.height); // destination rectangle
 
     drawKeypoints(pose, .2, ctx);
     drawSkeleton(pose, ctx);
