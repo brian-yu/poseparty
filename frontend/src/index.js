@@ -38,14 +38,14 @@ createLocalTracks({
       if (publication.isSubscribed) {
         const track = publication.track;
         const elem = track.attach();
-        elem.participantIdentity = participant.identity;
+        elem.setAttribute('participantIdentity', participant.identity);
         document.getElementById('remote-media-div').appendChild(elem);
       }
     });
 
     participant.on('trackSubscribed', track => {
       const elem = track.attach();
-      elem.participantIdentity = participant.identity;
+      elem.setAttribute('participantIdentity', participant.identity);
       document.getElementById('remote-media-div').appendChild(elem);
     });
   }
@@ -53,7 +53,7 @@ createLocalTracks({
   const removeParticipant = participant => {
     const container = document.getElementById('remote-media-div');
     for (const elem of container.children) {
-      if (elem.participantIdentity === participant.identity) {
+      if (elem.getAttribute('participantIdentity') === participant.identity) {
         container.removeChild(elem);
       }
     }

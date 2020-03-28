@@ -28,4 +28,4 @@ def getToken(room, username):
     # Serialize the token as a JWT
     jwt = token.to_jwt()
     print(jwt)
-    return 'Hello, World!'
+    return jwt
