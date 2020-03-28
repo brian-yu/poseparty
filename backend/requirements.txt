@@ -2,3 +2,4 @@ flask
 twilio
 websockets
 asyncio
+flask-cors
