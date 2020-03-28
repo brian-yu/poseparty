@@ -16,6 +16,11 @@ API_KEY_SID = '***REMOVED***'
 API_KEY_SECRET = '***REMOVED***'
 client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
+NAME_WORDS = [
+    ['exuberant', 'flaccid', 'eager', 'infected', 'quarantined'], # adjectives
+    ['yogi', 'poser', 'hacker', 'millenial', 'boomer'], # nouns
+]
+
 @app.route('/createRoom/<name>/')
 def createRoom(name):
     room = client.video.rooms.create(
@@ -49,7 +54,7 @@ def getToken(room):
     # Create an Access Token
     token = AccessToken(ACCOUNT_SID, API_KEY_SID, API_KEY_SECRET)
 
-    username = 'foobar' + str(random.randint(0, 100)) # TODO: make a silly name later
+    username = '-'.join(random.choice(NAME_WORDS[i]) for i in range(2))
     # Set the Identity of this token
     token.identity = username
 
