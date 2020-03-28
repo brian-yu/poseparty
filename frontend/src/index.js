@@ -44,7 +44,6 @@ createLocalTracks({
     });
 
     participant.on('trackSubscribed', track => {
-      const track = publication.track;
       const elem = track.attach();
       elem.participantIdentity = participant.identity;
       document.getElementById('remote-media-div').appendChild(elem);
