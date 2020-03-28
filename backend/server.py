@@ -1,20 +1,22 @@
-#!/usr/bin/env python
+import flask
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VideoGrant
 
-# WS server example
+# Substitute your Twilio AccountSid and ApiKey details
+ACCOUNT_SID = '***REMOVED***' # ???
+API_KEY_SID = '***REMOVED***'
+API_KEY_SECRET = '***REMOVED***'
 
-import asyncio
-import websockets
+# Create an Access Token
+token = AccessToken(ACCOUNT_SID, API_KEY_SID, API_KEY_SECRET)
 
-async def hello(websocket, path):
-    name = await websocket.recv()
-    print(f"< {name}")
+# Set the Identity of this token
+token.identity = 'example-user'
 
-    greeting = f"Hello {name}!"
+# Grant access to Video
+grant = VideoGrant(room='cool room')
+token.add_grant(grant)
 
-    await websocket.send(greeting)
-    print(f"> {greeting}")
-
-start_server = websockets.serve(hello, "localhost", 8765)
-
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+# Serialize the token as a JWT
+jwt = token.to_jwt()
+print(jwt)
