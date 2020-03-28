@@ -7,8 +7,6 @@ import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
 
-const token_url = `http://127.0.0.1:5000/getToken/`;
-
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('room')) {
   const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -19,25 +17,16 @@ const ROOM_ID = urlParams.get('room');
 
 document.addEventListener("DOMContentLoaded", run);
 
-let jsondata;    
-fetch(token_url + ROOM_ID).then(
-  function(u){ return u.text();}
-).then(
-  function(json){
-    jsondata = json;
-  }
-);
-
 // TODO: create room based on urlParams. and get access token from flask using room and client id
 createLocalTracks({
   audio: true,
   video: { width: 640 }
-}).then(localTracks => {
-  return connect(jsondata,
-                {
-                  name: `${ROOM_ID}`,
-                  tracks: localTracks
-                });
+}).then(async (localTracks) => {
+  const token = await getTwilioToken(ROOM_ID);
+  return connect(token, {
+    name: `${ROOM_ID}`,
+    tracks: localTracks
+  });
 }).then(room => {
   console.log(`Connected to Room: ${room.name}`);
 

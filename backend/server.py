@@ -66,7 +66,6 @@ def getToken(room):
 
     # Serialize the token as a JWT
     jwt = token.to_jwt()
-    print(jwt)
 
     return jwt
 
