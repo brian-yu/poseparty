@@ -17,8 +17,8 @@ API_KEY_SECRET = 'i46QxVuJKZ38LuewwpTDzkn5nbeMwXPH'
 client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
 NAME_WORDS = [
-    ['exuberant', 'flaccid', 'eager', 'infected', 'quarantined'], # adjectives
-    ['yogi', 'poser', 'hacker', 'millenial', 'boomer'], # nouns
+    ['exuberant', 'restless', 'energetic', 'eager', 'infected', 'quarantined'], # adjectives
+    ['yogi', 'poser', 'hacker', 'millenial', 'boomer', 'guru', 'student'], # nouns
 ]
 
 @app.route('/createRoom/<name>/')
