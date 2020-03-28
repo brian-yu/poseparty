@@ -1,0 +1,34 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>CoYoga</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <script src="./build/main.js"></script>
+</head>
+
+<body>
+  <h1>CoYoga</h1>
+  <h2>Social exercise for social isolation.</h2>
+  <div class="canvas-wrapper">
+    <div>
+        <canvas id="img-canvas" width="640" height="480"></canvas> 
+        <!-- <img id="img" src="./tadasana.png" width="640" height="480" autoplay style="display: none"></img> -->
+        <img id="img" src="./vrksasana.png" width="640" height="480" autoplay style="display: none"></img>
+    </div>
+    <div>
+        <canvas id="video-canvas" width="640" height="480"></canvas> 
+        <video id="video" width="640" height="480" autoplay style="display: none"></video>
+    </div>
+  </div>
+
+  <div>
+    <h2 id="similarity-score"></h2>
+  </div>
+  <div class="remote-videos">
+  </div>
+
+  
+</body>
+
+</html>

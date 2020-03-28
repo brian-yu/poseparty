@@ -1,0 +1,13 @@
+.canvas-wrapper {
+    display: flex;
+}
+
+
+#video-canvas, #img-canvas {
+/* mirror canvas */
+  transform: scaleX(-1);
+}
+
+#similarity-score {
+    font-size: 3em;
+}
