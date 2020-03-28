@@ -28,7 +28,9 @@ async def notify_users():
 
 async def publish(room, data):
     users = ROOMS[room]
-    print(users)
+    print(f"sending {data['action']} to {[USERS[u]['clientId'] for u in users]}")
+    if 'targetClientId' in data:
+        print(f"\ttargetClient: {data['targetClientId']}")
     if users:  # asyncio.wait doesn't accept an empty list
         message = json.dumps({"type": "data", **data})
         await asyncio.wait([user.send(message) for user in users])
@@ -61,8 +63,8 @@ async def counter(websocket, path):
                 await notify_state()
             elif action in {"offer", "answer"}:
                 room = data['room']
-                print(data)
-                # data.pop('action')
+                # print(data)
+                # data.pop('type')
                 data.pop('room')
                 await publish(room, data)
 

@@ -58,7 +58,7 @@ navigator.mediaDevices.getUserMedia({
           // NEED TO BE OFFER TO SPECIFIC CLIENT, PERHAPS BY CLIENTID!!
           data.clientIds.map(targetClientId => {
             if (targetClientId !== clientId) {
-              console.log("SENDING OFFER TO", targetClientId)
+              // console.log("SENDING OFFER TO", targetClientId)
               const conn = createConnAndSendOffer(socket, stream, roomHash, clientId, configuration, targetClientId);
               // createConnAndListenForOffer(socket, roomHash, clientId, configuration);
               listenForAnswer(conn, socket, clientId, targetClientId);
@@ -71,7 +71,6 @@ navigator.mediaDevices.getUserMedia({
       // } else {
       //   createConnAndListenForOffer(socket, roomHash, clientId, configuration);  
       } else if (clientId !== data.from) {
-        console.log("CREATING CONN AND LISTENING FOR OFFER")
         createConnAndListenForOffer(socket, stream, roomHash, clientId, configuration);
       }
     }
@@ -84,115 +83,9 @@ function onError(error) {
   console.error(error);
 };
 
-// function sendMessage(message) {
-//   socket.send(JSON.stringify({
-//     action: 'publish',
-//     room: roomHash,
-//     clientId: clientId,
-//     ...message
-//   }));
-// }
-
-// function startWebRTC(isOfferer) {
-//   pc = new RTCPeerConnection(configuration);
-
-//   console.log("YOLO")
-
-//   // 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
-//   // message to the other peer through the signaling server
-//   pc.onicecandidate = event => {
-//     if (event.candidate) {
-//       sendMessage({'candidate': event.candidate});
-//     }
-//   };
-
-//   // If user is offerer let the 'negotiationneeded' event create the offer
-//   if (isOfferer) {
-//     pc.onnegotiationneeded = () => {
-//       pc.createOffer().then(localDescCreated).catch(onError);
-//     }
-//   }
-
-//   pc.onconnectionstatechange = (e) => {
-//     console.log("CONNECTION STATE", e.target.connectionState)
-//   }
-
-//   // When a remote stream arrives display it in the #remoteVideo element
-//   pc.ontrack = event => {
-//     console.log("NEW STREAM!", event)
-//     const stream = event.streams[0];
-//     // if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-//     //   remoteVideo.srcObject = stream;
-//     // }
-
-//     // TODO: remove video when disconnected
-
-//     const video = document.createElement('video');
-//     video.autoplay = true;
-//     video.srcObject = stream;
-//     remoteVideos.appendChild(video);
-
-//   };
-
-//   navigator.mediaDevices.getUserMedia({
-//     audio: false,
-//     video: true,
-//   }).then(stream => {
-//     // Display your local video in #localVideo element
-//     if (!localVideo.srcObject) {
-//       localVideo.srcObject = stream;
-//     }
-//     // Add your stream to be sent to the conneting peer
-//     stream.getTracks().forEach(track => pc.addTrack(track, stream));
-//   }, onError);
-
-//   socket.onmessage = (event) => {
-//     const data = JSON.parse(event.data);
-    
-//     if (data.type === 'data') {
-//       console.log(data)
-
-//       // ignore messages from yourself
-//       if (data.clientId === clientId) {
-//         return;
-//       }
-
-//       if (data.sdp) {
-//         // This is called after receiving an offer or answer from another peer
-//         pc.setRemoteDescription(new RTCSessionDescription(data.sdp), () => {
-//           // When receiving an offer lets answer it
-//           if (pc.remoteDescription.type === 'offer') {
-//             pc.createAnswer().then(localDescCreated).catch(onError);
-//           }
-//         }, onError);
-//       } else if (data.candidate) {
-//         // Add the new ICE candidate to our connections remote description
-//         pc.addIceCandidate(
-//           new RTCIceCandidate(data.candidate), onSuccess, onError
-//         );
-//       }
-//     }
-//   };
-
-//   // close peer connection on unload
-//   window.addEventListener("beforeunload", () => {
-//     console.log("CLOSING")
-//     pc.close()
-//   }, false);
-// }
-
-// function localDescCreated(desc) {
-//   pc.setLocalDescription(
-//     desc,
-//     () => sendMessage({'sdp': pc.localDescription}),
-//     onError
-//   );
-// }
-
-
 
 const sendData = (websocket, data) => {
-  console.log('sending data')
+  // console.log('sending data')
   websocket.send(JSON.stringify(data));
 };
 
@@ -200,11 +93,13 @@ const setLocalDescription = (conn, desc, callback) => {
   conn.setLocalDescription(
     desc,
     callback,
-    onError
+    (err) => console.error("setLocalDescription", err)
   );
 };
 
 function createConnAndSendOffer(websocket, stream, room, clientId, config, targetClientId) {
+
+  console.log("CREATING CONN AND SENDING OFFER TO", targetClientId)
 
   conn = new RTCPeerConnection(config);
 
@@ -224,7 +119,12 @@ function createConnAndSendOffer(websocket, stream, room, clientId, config, targe
 
   // Create offer, set local description, and send to server.
   conn.onnegotiationneeded = () => {
-    console.log('createconnandsend')
+    if (conn.signalingState != "stable") return; // https://stackoverflow.com/a/51115877/4014918
+
+    console.log('creating offer and sending sdp to', targetClientId)
+    console.log(conn)
+    console.log(conn.signalingState)
+    console.log(conn.localDescription)
     conn.createOffer().then(desc => setLocalDescription(
       conn,
       desc,
@@ -242,6 +142,7 @@ function createConnAndSendOffer(websocket, stream, room, clientId, config, targe
   // message to the other peer through the signaling server
   conn.onicecandidate = event => {
     if (event.candidate) {
+      console.log('creating offer and sending candidate to', targetClientId)
       sendData(websocket, {
         room, // is this necessary?
         clientId,
@@ -278,23 +179,10 @@ function createConnAndSendOffer(websocket, stream, room, clientId, config, targe
 }
 
 function createConnAndListenForOffer(websocket, stream, room, clientId, config) {
-
+  console.log("CREATING CONN AND LISTENING FOR OFFER")
   conn = new RTCPeerConnection(config);
 
   stream.getTracks().forEach(track => conn.addTrack(track, stream));
-
-  // 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
-  // message to the other peer through the signaling server
-  conn.onicecandidate = event => {
-    if (event.candidate) {
-      sendData(websocket, {
-        candidate: event.candidate,
-        action: 'answer',
-        room: room, // is this necessary?
-        clientId: clientId,
-      });
-    }
-  };
 
   conn.ontrack = event => {
     console.log("NEW STREAM!", event)
@@ -317,25 +205,48 @@ function createConnAndListenForOffer(websocket, stream, room, clientId, config) 
     // console.log('listen to offer websocket msg!', data);
     
     if (data.action === 'offer') {
-      console.log('received offer!', data);
 
       // ignore messages from self
       if (data.clientId === clientId || data.targetClientId !== clientId) {
         return;
       }
 
+      console.log(`RECEIVED ${data.sdp ? 'SDP' : 'CANDIDATE'} OFFER FROM ${data.clientId}`);
+      console.log(data);
+
+      // 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
+      // message to the other peer through the signaling server
+      conn.onicecandidate = event => {
+        if (event.candidate) {
+          console.log('creating answer and sending candidate to', data.clientId)
+          sendData(websocket, {
+            room,
+            clientId,
+            targetClientId: data.clientId, // reply with answr
+            candidate: event.candidate,
+            action: 'answer',
+          });
+        }
+      };
+
       if (data.sdp) {
+        console.log('REMOTE DESC', conn.remoteDescription)
+        if (conn.remoteDescription !== null) {
+          return;
+        }
         // This is called after receiving an offer or answer from another peer
         conn.setRemoteDescription(new RTCSessionDescription(data.sdp), () => {
           // When receiving an offer lets answer it
           if (conn.remoteDescription.type === 'offer') {
+            console.log('creating answer and sending sdp to', data.clientId)
             conn.createAnswer().then(desc => setLocalDescription(
               conn,
               desc,
               () => sendData(websocket, {
+                room,
+                clientId,
+                targetClientId: data.clientId, //reply with answer
                 action: 'answer',
-                room: room, // is this necessary?
-                clientId: clientId,
                 sdp: conn.localDescription,
               }),
             )).catch((err) => console.log("createAnswer", err));
@@ -343,10 +254,17 @@ function createConnAndListenForOffer(websocket, stream, room, clientId, config) 
         }, (err) => console.log("setRemoteDescription", err));
       } else if (data.candidate) {
         // Add the new ICE candidate to our connections remote description
+        console.log('ICE STATE', conn.iceConnectionState)
+        if (conn.iceConnectionState !== 'new') {
+          return;
+        }
         conn.addIceCandidate(
-          new RTCIceCandidate(data.candidate), onSuccess, onError
+          new RTCIceCandidate(data.candidate), onSuccess,
+            (err) => console.error("offer addIceCandidate", err)
         );
       }
+
+      
     }
   });
 
@@ -361,6 +279,8 @@ function createConnAndListenForOffer(websocket, stream, room, clientId, config) 
 }
 
 function listenForAnswer(conn, websocket, clientId, fromClientId) {
+
+  console.log("LISTENING FOR ANSWER FROM", fromClientId)
 
   conn.ontrack = event => {
     console.log("NEW STREAM!", event)
@@ -381,21 +301,33 @@ function listenForAnswer(conn, websocket, clientId, fromClientId) {
     const data = JSON.parse(event.data);
     
     if (data.action === 'answer') {
-      console.log('received answer!', data);
 
       // ignore messages from self
-      if (data.clientId !== fromClientId) {
+      if (data.clientId !== fromClientId || data.targetClientId !== clientId) {
         return;
       }
 
+      console.log(`RECEIVED ${data.sdp ? 'SDP' : 'CANDIDATE'} ANSWER FROM ${data.clientId}`);
+      console.log(data);
+
       if (data.sdp) {
+
+        if (conn.remoteDescription !== null) {
+          return;
+        }
+
         // This is called after receiving an offer or answer from another peer
         conn.setRemoteDescription(new RTCSessionDescription(
-          data.sdp), () => {}, onError);
+          data.sdp), () => {}, (err) => console.error("answer setRemoteDesc", err));
       } else if (data.candidate) {
+
+        if (conn.iceConnectionState !== 'new') {
+          return;
+        }
         // Add the new ICE candidate to our connections remote description
         conn.addIceCandidate(
-          new RTCIceCandidate(data.candidate), onSuccess, onError
+          new RTCIceCandidate(data.candidate), onSuccess,
+          (err) => console.error("answer addIceCandidate", err)
         );
       }
     }
