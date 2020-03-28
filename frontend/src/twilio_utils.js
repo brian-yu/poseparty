@@ -2,7 +2,7 @@
 import { connect, createLocalTracks } from 'twilio-video';
 import { getTwilioToken } from './api_utils';
 
-export const setupTwilio = (ROOM_ID) => {
+export const setupTwilio = (ROOM_ID, STATE) => {
     createLocalTracks({
         audio: true,
         video: { width: 640 }
@@ -14,6 +14,9 @@ export const setupTwilio = (ROOM_ID) => {
         });
     }).then(room => {
         console.log(`Connected to Room: ${room.name}`);
+        console.log(`Your identity: ${room.localParticipant.identity}`);
+
+        STATE.playerName = room.localParticipant.identity;
     
         const addParticipant = participant => {
         participant.tracks.forEach(publication => {

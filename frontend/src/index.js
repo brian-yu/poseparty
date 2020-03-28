@@ -16,7 +16,47 @@ const ROOM_ID = urlParams.get('id');
 
 document.addEventListener("DOMContentLoaded", run);
 
-setupTwilio(ROOM_ID);
+const GameStateEnum = Object.freeze({"Waiting":1, "Playing":2, "Finished":3})
+
+const STATE = {
+  gameState: GameStateEnum.Waiting,
+  playerName: null,
+  currentScore: 0, // and other scoring metadata
+  currentRound: 0,
+  imageName: null,
+  imagePose: null,
+}
+
+// setup video calling and set player name
+setupTwilio(ROOM_ID, STATE);
+
+/*
+
+TODO:
+- Set up websocket handler 
+  - START_ROUND
+    - If data[current_round] == 0 
+      - notify user that game is starting
+    - populate reference image with given image
+    - populate each screen with the score
+    - start timeout with given duration that calls score_submit
+    - zero out current_score
+  - END_GAME
+    - replace reference image with leaderboard?
+- JOIN_GAME on load
+- SET_READY when user is in full frame / matches reaady pose ('tadasana'?)
+    - (use posenet to detect)
+    - add green somewhere (border?) to signify readiness
+
+
+- cache pose computations of preset poses
+- determine scoring
+- improve posenet similarity matching
+  - do bounding box trimming/scaling
+  - weighted matching?
+- make skeleton drawing prettier?
+
+*/
 
 function run() {
   // Grab elements, create settings, etc.
