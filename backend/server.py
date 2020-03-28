@@ -1,3 +1,4 @@
+# [START gae_python37_app]
 import flask
 from flask import Flask, make_response
 from flask_cors import CORS, cross_origin
@@ -6,6 +7,7 @@ from twilio.jwt.access_token.grants import VideoGrant
 from twilio.rest import Client
 import random
 from time import sleep
+
 
 app = Flask(__name__)
 CORS(app)
@@ -71,3 +73,5 @@ def getToken(room):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# [END gae_python37_app]
