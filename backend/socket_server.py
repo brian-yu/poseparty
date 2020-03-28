@@ -82,6 +82,7 @@ class Game:
 
         await self.notify_players({
             'action': 'START_ROUND',
+            'roundDuration': 10, # TODO: random length
             'currentRound': self.current_round,
             'totalRounds': self.total_rounds,
             'prevScores': self.get_scores(),
