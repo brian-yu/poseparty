@@ -1,2 +1,2 @@
-asyncio
-websockets
+flask
+twilio
