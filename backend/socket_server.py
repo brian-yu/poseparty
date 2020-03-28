@@ -6,12 +6,6 @@ import random
 
 logging.basicConfig()
 
-# TODO: move to frontend
-NAME_WORDS = [
-    ['exuberant', 'flaccid', 'eager', 'infected', 'quarantined'], # adjectives
-    ['yogi', 'poser', 'hacker', 'millenial', 'boomer'], # nouns
-]
-
 '''
 need to handle:
 - joining the game
@@ -108,6 +102,16 @@ class Game:
         for name, player in self.players.items():
             await player.send(data)
 
+'''
+TEST SEQUENCE:
+In JS:
+
+`ws = new WebSocket('ws://localhost:6789')`
+
+1. {'action': 'JOIN_GAME', 'room': '1'} ...
+2. {'action': 'SET_READY', 'room': '1'}
+
+'''
 
 
 
@@ -120,6 +124,11 @@ async def handler(websocket, path):
     try:
         async for message in websocket:
             data = json.loads(message)
+
+            if "action" not in data:
+                logging.error("no action: {}", data)
+                continue
+
 
             if data["action"] == "JOIN_GAME":
                 await join_or_create_game(websocket,
