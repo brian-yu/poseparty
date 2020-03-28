@@ -7,31 +7,54 @@ import { TEST_TOKEN } from './secrets';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
+const backend = `http://127.0.0.1:5000/getToken/` + 'foo';
 
-const urlParams = new URLSearchParams(window.location.search);
-if (!urlParams.has('room')) {
-  const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-  urlParams.set('room', hash);
-  window.location.search = urlParams.toString();
-}
-const room = urlParams.get('room');
+// async function createRoom(){
+//   let response = await fetch('http://127.0.0.1:5000/createRoom');
 
-const clientID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+// }
+
+// const urlParams = new URLSearchParams(window.location.search);
+// if (!urlParams.has('room')) {
+//   const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+//   urlParams.set('room', hash);
+//   window.location.search = urlParams.toString();
+// }
+// const room = urlParams.get('room');
+// const room = await createRoom();
+
+// const clientID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
 
 document.addEventListener("DOMContentLoaded", run);
 
 
 console.log('hello!');
 
+let jsondata;    
+fetch(backend).then(
+        function(u){ return u.text();}
+      ).then(
+        function(json){
+          jsondata = json;
+        }
+      )
+
 // TODO: create room based on urlParams. and get access token from flask using room and client id
 
+let roomname = 'foo';
 createLocalTracks({
   audio: true,
   video: { width: 640 }
 }).then(localTracks => {
-  return connect(TEST_TOKEN, {
-    name: 'room1',
-    tracks: localTracks
+  return connect(jsondata
+
+                  // .then(x => x.text())
+                  // .then(x => {
+                  //   console.log(x);
+                  //   return x;
+                , {
+                name: `${roomname}`,
+                tracks: localTracks
   });
 }).then(room => {
   console.log(`Connected to Room: ${room.name}`);
@@ -104,10 +127,10 @@ createLocalTracks({
   });
 });
 
+
+
+
 function run() {
-
-  
-
   // Grab elements, create settings, etc.
   const video = document.getElementById('video');
   const canvas = document.getElementById('video-canvas');
