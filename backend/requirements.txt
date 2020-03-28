@@ -1,2 +1,4 @@
 flask
 twilio
+websockets
+asyncio
