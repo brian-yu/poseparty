@@ -142,7 +142,7 @@ function run() {
     }
 
     videoPose = results[0];
-    console.log("VIDEOPOSE", videoPose)
+    // console.log("VIDEOPOSE", videoPose)
 
     const score = poseSimilarity(videoPose, imgPose);
     const scoreElem = document.getElementById('similarity-score');
