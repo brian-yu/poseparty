@@ -2,11 +2,10 @@ import ml5 from 'ml5';
 import { connect, createLocalTracks } from 'twilio-video';
 
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './utils';
+import { TEST_TOKEN } from './secrets';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
-
-const TEST_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzRkMDA0MzBkNWEzNjNjYjgwN2YyNWQ4ZDIxOWM1MTAxLTE1ODU0MTI5NzIiLCJpc3MiOiJTSzRkMDA0MzBkNWEzNjNjYjgwN2YyNWQ4ZDIxOWM1MTAxIiwic3ViIjoiQUMwMjM3ZDM0NjE0NzY1YjI5NjMwNWJlMjgzOTI2MDBmYiIsImV4cCI6MTU4NTQxNjU3MiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiYnJpYW4iLCJ2aWRlbyI6eyJyb29tIjoicm9vbTEifX19.yhf_M818Wu7Y9uoaTF8Oc-z2q0Jx5466Av7cYfSVnDw';
 
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('room')) {
