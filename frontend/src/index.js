@@ -8,12 +8,12 @@ const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
 
 const urlParams = new URLSearchParams(window.location.search);
-if (!urlParams.has('room')) {
+if (!urlParams.has('id')) {
   const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-  urlParams.set('room', hash);
+  urlParams.set('id', hash);
   window.location.search = urlParams.toString();
 }
-const ROOM_ID = urlParams.get('room');
+const ROOM_ID = urlParams.get('id');
 
 document.addEventListener("DOMContentLoaded", run);
 
