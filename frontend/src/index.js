@@ -54,6 +54,9 @@ createLocalTracks({
     const container = document.getElementById('remote-media-div');
     for (const elem of container.children) {
       if (elem.getAttribute('participantidentity') === participant.identity) {
+        console.log('removing', elem);
+        elem.pause();
+        elem.src = '';
         container.removeChild(elem);
       }
     }
@@ -74,7 +77,7 @@ createLocalTracks({
   });
 
   room.on('participantDisconnected', participant => {
-    console.log(`Participant disconnected: ${participant.identity}`);
+    console.log(`Participant disconnected: '${participant.identity}'`);
     removeParticipant(participant);
   });
 
