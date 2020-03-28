@@ -20,7 +20,7 @@ const ROOM_ID = urlParams.get('room');
 document.addEventListener("DOMContentLoaded", run);
 
 let jsondata;    
-fetch(token_url + roomname).then(
+fetch(token_url + ROOM_ID).then(
   function(u){ return u.text();}
 ).then(
   function(json){
