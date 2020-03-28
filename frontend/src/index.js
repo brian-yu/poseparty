@@ -50,16 +50,12 @@ createLocalTracks({
     });
   }
 
+  const trackUnsubscribed = track => {
+    track.detach().forEach(element => element.remove());
+  }
+
   const removeParticipant = participant => {
-    const container = document.getElementById('remote-media-div');
-    for (const elem of container.children) {
-      if (elem.getAttribute('participantidentity') === participant.identity) {
-        console.log('removing', elem);
-        elem.pause();
-        elem.src = '';
-        container.removeChild(elem);
-      }
-    }
+    participant.tracks.forEach(trackUnsubscribed);
   }
 
   room.participants.forEach(participant => {
