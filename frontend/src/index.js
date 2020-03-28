@@ -2,6 +2,7 @@ import ml5 from 'ml5';
 import { connect, createLocalTracks } from 'twilio-video';
 
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './utils';
+import { TEST_TOKEN } from './secrets';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
@@ -140,7 +141,7 @@ function run() {
     }
 
     videoPose = results[0];
-    console.log("VIDEOPOSE", videoPose)
+    // console.log("VIDEOPOSE", videoPose)
 
     const score = poseSimilarity(videoPose, imgPose);
     const scoreElem = document.getElementById('similarity-score');
