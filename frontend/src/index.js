@@ -1,7 +1,8 @@
 import ml5 from 'ml5';
 import { connect, createLocalTracks } from 'twilio-video';
 
-import { drawKeypoints, drawSkeleton, poseSimilarity } from './utils';
+import { getTwilioToken } from './api_utils';
+import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 import { API_HOST } from './constants';
 import { TEST_TOKEN } from './secrets';
 
@@ -14,9 +15,8 @@ if (!urlParams.has('room')) {
   urlParams.set('room', hash);
   window.location.search = urlParams.toString();
 }
-const room = urlParams.get('room');
-
-const clientID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+const ROOM_ID = urlParams.get('room');
+// const CLIENT_ID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
 
 document.addEventListener("DOMContentLoaded", run);
 
