@@ -37,17 +37,27 @@ createLocalTracks({
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
         const track = publication.track;
-        document.getElementById('remote-media-div').appendChild(track.attach());
+        const elem = track.attach();
+        elem.participantIdentity = participant.identity;
+        document.getElementById('remote-media-div').appendChild(elem);
       }
     });
 
     participant.on('trackSubscribed', track => {
-      document.getElementById('remote-media-div').appendChild(track.attach());
+      const track = publication.track;
+      const elem = track.attach();
+      elem.participantIdentity = participant.identity;
+      document.getElementById('remote-media-div').appendChild(elem);
     });
   }
 
   const removeParticipant = participant => {
-    
+    const container = document.getElementById('remote-media-div');
+    for (const elem of container.children) {
+      if (elem.participantIdentity === participant.identity) {
+        container.removeChild(elem);
+      }
+    }
   }
 
   room.participants.forEach(participant => {
@@ -118,7 +128,7 @@ function run() {
     // ctx.drawImage(img, 0, 0, img.width,    img.height,     // source rectangle
     //                  0, 0, canvas.width, canvas.height); // destination rectangle
 
-    drawKeypoints(pose, ctx);
+    drawKeypoints(pose, .2, ctx);
     drawSkeleton(pose, ctx);
   }
 
@@ -133,7 +143,7 @@ function run() {
     if (videoPose !== null) {
       // console.log(pose)
       if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
-        drawKeypoints(videoPose, MIN_PART_CONFIDENCE, ctx);
+        drawKeypoints(videoPose, .2, ctx);
         drawSkeleton(videoPose, ctx);
       }
     }
@@ -155,7 +165,7 @@ function run() {
      outputStride: 32,
      inputResolution: 193, // default 257
      maxPoseDetections: 1,
-     minConfidence: MIN_PART_CONFIDENCE,
+     // minConfidence: MIN_PART_CONFIDENCE,
   });
   poseNet.on('pose', gotPoses);
 
