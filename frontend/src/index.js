@@ -33,9 +33,7 @@ createLocalTracks({
 }).then(room => {
   console.log(`Connected to Room: ${room.name}`);
 
-  room.participants.forEach(participant => {
-    console.log(`Participant "${participant.identity}" is connected to the Room`);
-
+  const addParticipant = participant => {
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
         const track = publication.track;
@@ -46,6 +44,16 @@ createLocalTracks({
     participant.on('trackSubscribed', track => {
       document.getElementById('remote-media-div').appendChild(track.attach());
     });
+  }
+
+  const removeParticipant = participant => {
+    
+  }
+
+  room.participants.forEach(participant => {
+    console.log(`Participant "${participant.identity}" is connected to the Room`);
+
+    addParticipant(participant);
   });
 
 
@@ -53,16 +61,12 @@ createLocalTracks({
   room.on('participantConnected', participant => {
     console.log(`Participant "${participant.identity}" connected`);
 
-    participant.tracks.forEach(publication => {
-      if (publication.isSubscribed) {
-        const track = publication.track;
-        document.getElementById('remote-media-div').appendChild(track.attach());
-      }
-    });
+    addParticipant(participant);
+  });
 
-    participant.on('trackSubscribed', track => {
-      document.getElementById('remote-media-div').appendChild(track.attach());
-    });
+  room.on('participantDisconnected', participant => {
+    console.log(`Participant disconnected: ${participant.identity}`);
+    removeParticipant(participant);
   });
 
   room.on('disconnected', room => {
