@@ -36,8 +36,8 @@ const devConfig = {
 const prodConfig = {
   mode: 'production',
   output: {
-    filename: 'main.min.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'build'),
   },
   plugins: [
     new webpack.DefinePlugin({
