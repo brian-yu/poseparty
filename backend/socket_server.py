@@ -6,6 +6,8 @@ import random
 
 logging.basicConfig()
 
+logging.getLogger().setLevel(logging.INFO)
+
 '''
 need to handle:
 - joining the game
@@ -58,19 +60,26 @@ class Game:
     def add_player(self, websocket, name):
         player = Player(websocket, self, name)
         self.players[websocket] = player
+
+        logging.info(f'added player {player.name} to game in room {self.room}')
     
     def get_scores(self):
         return {
-            player.name: player.score for player in self.players.values()
+            player.name: player.round_scores for player in self.players.values()
         }
     
     async def ready_player(self, websocket):
         self.players[websocket].ready = True
 
+        logging.info(f'player {self.players[websocket].name} ready for room {self.room}')
+
         if sum([p.ready for p in self.players.values()]) == len(self.players):
             await self.start_round()
     
     async def start_round(self):
+
+        logging.info(f'starting round {self.current_round} in room {self.room}')
+
         await self.notify_players({
             'action': 'START_ROUND',
             'currentRound': self.current_round,
@@ -79,10 +88,13 @@ class Game:
         })
     
     async def send_score(self, websocket, score):
-        self.players[websocket].round_scores.append(score)
+        player = self.players[websocket]
+        player.round_scores.append(score)
+
+        logging.info(f'player {player.name} sending in score to room {self.room}')
 
         # if all scores are in, start next round
-        if sum(len(p.round_scores) == self.current_round + 1 for p in self.players) == len(self.players):
+        if sum(len(p.round_scores) == self.current_round + 1 for p in self.players.values()) == len(self.players):
             self.current_round += 1
             if self.current_round == self.total_rounds:
                 await self.end()
@@ -90,6 +102,9 @@ class Game:
                 await self.start_round()
     
     async def end(self):
+
+        logging.info(f'game ending in room {self.room}')
+
         await self.notify_players({
             'action': 'END_GAME',
             'totalRounds': self.total_rounds,
@@ -106,10 +121,14 @@ class Game:
 TEST SEQUENCE:
 In JS:
 
-`ws = new WebSocket('ws://localhost:6789')`
+ws = new WebSocket('ws://localhost:6789')
 
-1. {'action': 'JOIN_GAME', 'room': '1'} ...
-2. {'action': 'SET_READY', 'room': '1'}
+ws.send(JSON.stringify({action: 'JOIN_GAME', room: '1', name: 'bob'}))
+
+ws.send(JSON.stringify({action: 'SET_READY', room: '1'}))
+
+ws.send(JSON.stringify({action: 'FINISH_ROUND', room: '1', score: '5'}))
+
 
 '''
 
@@ -129,16 +148,22 @@ async def handler(websocket, path):
                 logging.error("no action: {}", data)
                 continue
 
-
             if data["action"] == "JOIN_GAME":
-                await join_or_create_game(websocket,
-                    data['room'], data['name'])
+                room = data['room']
+                name = data['name']
+                await join_or_create_game(websocket, room, name)
             elif data["action"] == "SET_READY":
                 room = data['room']
+                if room not in ROOMS:
+                    logging.error("no game in room: {}", data)
+                    continue
                 game = ROOMS[room]
                 await game.ready_player(websocket)
             elif data["action"] == "FINISH_ROUND":
                 room = data['room']
+                if room not in ROOMS:
+                    logging.error("no game in room: {}", data)
+                    continue
                 game = ROOMS[room]
                 score = data['score']
                 await game.send_score(websocket, score)
