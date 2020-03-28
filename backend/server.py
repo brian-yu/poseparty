@@ -9,10 +9,10 @@ from time import sleep
 app = Flask(__name__)
 
 # Substitute your Twilio AccountSid and ApiKey details
-# ***REMOVED***
-ACCOUNT_SID = '***REMOVED***' # ???
+# DO NOT CHANGE - all specific to Aaron's Twilio account
+ACCOUNT_SID = '***REMOVED***'
 AUTH_TOKEN = '***REMOVED***'
-API_KEY_SID = 'SKf4235e61e171a4bfb2e098b2a708cb21'
+API_KEY_SID = '***REMOVED***'
 API_KEY_SECRET = '***REMOVED***'
 client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
@@ -49,12 +49,12 @@ def getToken(room):
     # Create an Access Token
     token = AccessToken(ACCOUNT_SID, API_KEY_SID, API_KEY_SECRET)
 
-    username = 'foobar' + str(random.randint(0, 100))
+    username = 'foobar' + str(random.randint(0, 100)) # TODO: make a silly name later
     # Set the Identity of this token
     token.identity = username
 
     # Grant access to Video
-    grant = VideoGrant(room=room)
+    grant = VideoGrant(room=room) # this must be here
     token.add_grant(grant)
 
     # Serialize the token as a JWT
