@@ -2,6 +2,7 @@ import ml5 from 'ml5';
 
 import { setupTwilio } from './twilio_utils';
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
+import { SOCKET_HOST } from './constants';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
@@ -20,18 +21,72 @@ const GameStateEnum = Object.freeze({"Waiting":1, "Playing":2, "Finished":3})
 
 const STATE = {
   gameState: GameStateEnum.Waiting,
-  playerName: null,
+  playerName: 'Loading...',
   currentScore: 0, // and other scoring metadata
   currentRound: 0,
   imageName: null,
-  imagePose: null,
+  imagePoseVector: null,
 }
 
 // setup video calling and set player name
 setupTwilio(ROOM_ID, STATE);
 
-/*
+class GameClient {
+  constructor(SOCKET_HOST, room) {
+    this.ws = new WebSocket(SOCKET_HOST);
+    this.ws.onmessage = event => {
+      data = JSON.parse(event.data);
+      this.handleMessage(data);
+    }
+    this.room = room;
+  }
 
+  join() {
+    this.send({
+      action: "JOIN_GAME",
+      name: STATE.playerName,
+    });
+  }
+
+  setReady() {
+    this.send({ action: 'SET_READY' })
+  }
+
+  finishRound(score) {
+    this.send({
+      score,
+      action: 'FINISH_ROUND',
+    })
+  }
+
+  send(data) {
+    console.log(data);
+    this.ws.send(JSON.stringify({
+      room: this.room,
+      ...data
+    }));
+  }
+
+  handleMessage(data) {
+    switch (data.action) {
+      case 'START_ROUND':
+        console.log('STARTING ROUND!', data);
+        break;
+      case 'END_GAME':
+        console.log('ENDING GAME!', data);
+        break;
+      default:
+        console.log('Unrecognized game action!', data);
+    }
+  }
+}
+
+const GAME_CLIENT = new GameClient(SOCKET_HOST, ROOM_ID);
+console.log('Game created');
+// if (w)
+// GAME_CLIENT.join();
+
+/*
 TODO:
 - Set up websocket handler 
   - START_ROUND
