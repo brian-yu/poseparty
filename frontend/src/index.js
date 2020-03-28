@@ -51,7 +51,7 @@ createLocalTracks({
   }
 
   const trackUnsubscribed = track => {
-    track.detach().forEach(element => element.remove());
+    // track.detach().forEach(element => element.remove());
   }
 
   const removeParticipant = participant => {
@@ -61,7 +61,7 @@ createLocalTracks({
       if (elem.getAttribute('participantidentity') === participant.identity) {
         console.log('removing', elem);
         elem.pause();
-        elem.src = '';
+        elem.removeAttribute('src');
         elem.load();
         container.removeChild(elem);
       }
