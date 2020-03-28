@@ -1,7 +1,4 @@
 import ml5 from 'ml5';
-import { connect, createLocalTracks } from 'twilio-video';
-
-import { getTwilioToken } from './api_utils';
 
 import { setupTwilio } from './twilio_utils';
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
