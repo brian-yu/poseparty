@@ -11,3 +11,13 @@
 #similarity-score {
     font-size: 3em;
 }
+
+#remote-media-div {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#remote-media-div > video {
+    width: 300px;
+}

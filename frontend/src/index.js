@@ -64,6 +64,18 @@ createLocalTracks({
       document.getElementById('remote-media-div').appendChild(track.attach());
     });
   });
+
+  room.on('disconnected', room => {
+    // Detach the local media elements
+    room.localParticipant.tracks.forEach(publication => {
+      const attachedElements = publication.track.detach();
+      attachedElements.forEach(element => element.remove());
+    });
+  });
+
+  window.addEventListener('unload', () => {
+    room.disconnect();
+  });
 });
 
 function run() {
