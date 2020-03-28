@@ -7,20 +7,20 @@ import { TEST_TOKEN } from './secrets';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
-const backend = `http://127.0.0.1:5000/getToken/` + 'foo';
+const token_url = `http://127.0.0.1:5000/getToken/`;
 
 // async function createRoom(){
 //   let response = await fetch('http://127.0.0.1:5000/createRoom');
 
 // }
 
-// const urlParams = new URLSearchParams(window.location.search);
-// if (!urlParams.has('room')) {
-//   const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-//   urlParams.set('room', hash);
-//   window.location.search = urlParams.toString();
-// }
-// const room = urlParams.get('room');
+const urlParams = new URLSearchParams(window.location.search);
+if (!urlParams.has('room')) {
+  const hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+  urlParams.set('room', hash);
+  window.location.search = urlParams.toString();
+}
+const roomname = urlParams.get('room');
 // const room = await createRoom();
 
 // const clientID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -28,10 +28,8 @@ const backend = `http://127.0.0.1:5000/getToken/` + 'foo';
 document.addEventListener("DOMContentLoaded", run);
 
 
-console.log('hello!');
-
 let jsondata;    
-fetch(backend).then(
+fetch(token_url + roomname).then(
         function(u){ return u.text();}
       ).then(
         function(json){
@@ -41,21 +39,15 @@ fetch(backend).then(
 
 // TODO: create room based on urlParams. and get access token from flask using room and client id
 
-let roomname = 'foo';
 createLocalTracks({
   audio: true,
   video: { width: 640 }
 }).then(localTracks => {
-  return connect(jsondata
-
-                  // .then(x => x.text())
-                  // .then(x => {
-                  //   console.log(x);
-                  //   return x;
-                , {
-                name: `${roomname}`,
-                tracks: localTracks
-  });
+  return connect(jsondata,
+                {
+                  name: `${roomname}`,
+                  tracks: localTracks
+                });
 }).then(room => {
   console.log(`Connected to Room: ${room.name}`);
 
