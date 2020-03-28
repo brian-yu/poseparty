@@ -7,7 +7,7 @@ import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
 
-const backend = `http://127.0.0.1:5000/getToken/` + 'foo';
+const token_url = `http://127.0.0.1:5000/getToken/`;
 
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('room')) {
@@ -19,33 +19,25 @@ const ROOM_ID = urlParams.get('room');
 
 document.addEventListener("DOMContentLoaded", run);
 
-
-console.log('hello!');
-
 let jsondata;    
-fetch(backend).then(
-      function(u){ return u.text();}
-    ).then(
-      function(json){
-        jsondata = json;
-      }
-    )
+fetch(token_url + roomname).then(
+  function(u){ return u.text();}
+).then(
+  function(json){
+    jsondata = json;
+  }
+);
 
 // TODO: create room based on urlParams. and get access token from flask using room and client id
 createLocalTracks({
   audio: true,
   video: { width: 640 }
 }).then(localTracks => {
-  return connect(jsondata
-
-                  // .then(x => x.text())
-                  // .then(x => {
-                  //   console.log(x);
-                  //   return x;
-                , {
-                name: `${ROOM_ID}`,
-                tracks: localTracks
-  });
+  return connect(jsondata,
+                {
+                  name: `${ROOM_ID}`,
+                  tracks: localTracks
+                });
 }).then(room => {
   console.log(`Connected to Room: ${room.name}`);
 
