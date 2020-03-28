@@ -124,6 +124,12 @@ In JS:
 
 ws = new WebSocket('ws://localhost:6789')
 
+ws.onmessage = function (event) {
+                data = JSON.parse(event.data);
+                console.log('data received');
+                console.log(data);
+            };
+
 ws.send(JSON.stringify({action: 'JOIN_GAME', room: '1', name: 'bob'}))
 
 ws.send(JSON.stringify({action: 'SET_READY', room: '1'}))
