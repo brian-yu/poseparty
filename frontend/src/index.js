@@ -15,12 +15,14 @@ if (!urlParams.has('room')) {
 }
 const room = urlParams.get('room');
 
+const clientID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+
 document.addEventListener("DOMContentLoaded", run);
 
 
 console.log('hello!');
 
-// TODO: create room based on urlParams. and get access token from flask.
+// TODO: create room based on urlParams. and get access token from flask using room and client id
 
 createLocalTracks({
   audio: true,
@@ -58,6 +60,7 @@ createLocalTracks({
     participant.tracks.forEach(trackUnsubscribed);
     const container = document.getElementById('remote-media-div');
     for (const elem of container.children) {
+      console.log(elem)
       if (elem.getAttribute('participantidentity') === participant.identity) {
         console.log('removing', elem);
         elem.pause();
