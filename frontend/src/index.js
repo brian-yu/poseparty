@@ -1,7 +1,6 @@
 import ml5 from 'ml5';
-import { connect, createLocalTracks } from 'twilio-video';
 
-import { getTwilioToken } from './api_utils';
+import { setupTwilio } from './twilio_utils';
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 
 const MIN_POSE_CONFIDENCE = 0.1;
@@ -17,89 +16,47 @@ const ROOM_ID = urlParams.get('id');
 
 document.addEventListener("DOMContentLoaded", run);
 
-// TODO: create room based on urlParams. and get access token from flask using room and client id
-createLocalTracks({
-  audio: true,
-  video: { width: 640 }
-}).then(async (localTracks) => {
-  const token = await getTwilioToken(ROOM_ID);
-  return connect(token, {
-    name: `${ROOM_ID}`,
-    tracks: localTracks
-  });
-}).then(room => {
-  console.log(`Connected to Room: ${room.name}`);
+const GameStateEnum = Object.freeze({"Waiting":1, "Playing":2, "Finished":3})
 
-  const addParticipant = participant => {
-    participant.tracks.forEach(publication => {
-      if (publication.isSubscribed) {
-        const track = publication.track;
-        const elem = track.attach();
-        elem.setAttribute('participantidentity', participant.identity);
-        document.getElementById('remote-media-div').appendChild(elem);
-      }
-    });
+const STATE = {
+  gameState: GameStateEnum.Waiting,
+  playerName: null,
+  currentScore: 0, // and other scoring metadata
+  currentRound: 0,
+  imageName: null,
+  imagePose: null,
+}
 
-    participant.on('trackSubscribed', track => {
-      const elem = track.attach();
-      elem.setAttribute('participantidentity', participant.identity);
-      document.getElementById('remote-media-div').appendChild(elem);
-    });
-  }
+// setup video calling and set player name
+setupTwilio(ROOM_ID, STATE);
 
-  const trackUnsubscribed = track => {
-    // track.detach().forEach(element => element.remove());
-  }
+/*
 
-  const removeParticipant = participant => {
-    participant.tracks.forEach(trackUnsubscribed);
-    const container = document.getElementById('remote-media-div');
-    for (const elem of container.children) {
-      console.log(elem)
-      if (elem.getAttribute('participantidentity') === participant.identity) {
-        console.log('removing', elem);
-        elem.pause();
-        elem.removeAttribute('src');
-        elem.load();
-        container.removeChild(elem);
-      }
-    }
-  }
-
-  room.participants.forEach(participant => {
-    console.log(`Participant "${participant.identity}" is connected to the Room`);
-
-    addParticipant(participant);
-  });
+TODO:
+- Set up websocket handler 
+  - START_ROUND
+    - If data[current_round] == 0 
+      - notify user that game is starting
+    - populate reference image with given image
+    - populate each screen with the score
+    - start timeout with given duration that calls score_submit
+    - zero out current_score
+  - END_GAME
+    - replace reference image with leaderboard?
+- JOIN_GAME on load
+- SET_READY when user is in full frame / matches reaady pose ('tadasana'?)
+    - (use posenet to detect)
+    - add green somewhere (border?) to signify readiness
 
 
-  // Attach the Participant's Media to a <div> element.
-  room.on('participantConnected', participant => {
-    console.log(`Participant "${participant.identity}" connected`);
+- cache pose computations of preset poses
+- determine scoring
+- improve posenet similarity matching
+  - do bounding box trimming/scaling
+  - weighted matching?
+- make skeleton drawing prettier?
 
-    addParticipant(participant);
-  });
-
-  room.on('participantDisconnected', participant => {
-    console.log(`Participant disconnected: '${participant.identity}'`);
-    removeParticipant(participant);
-  });
-
-  room.on('disconnected', room => {
-    // Detach the local media elements
-    room.localParticipant.tracks.forEach(publication => {
-      const attachedElements = publication.track.detach();
-      attachedElements.forEach(element => element.remove());
-    });
-  });
-
-  window.addEventListener('unload', () => {
-    room.disconnect();
-  });
-});
-
-
-
+*/
 
 function run() {
   // Grab elements, create settings, etc.
