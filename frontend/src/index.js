@@ -56,6 +56,16 @@ createLocalTracks({
 
   const removeParticipant = participant => {
     participant.tracks.forEach(trackUnsubscribed);
+    const container = document.getElementById('remote-media-div');
+    for (const elem of container.children) {
+      if (elem.getAttribute('participantidentity') === participant.identity) {
+        console.log('removing', elem);
+        elem.pause();
+        elem.src = '';
+        elem.load();
+        container.removeChild(elem);
+      }
+    }
   }
 
   room.participants.forEach(participant => {
