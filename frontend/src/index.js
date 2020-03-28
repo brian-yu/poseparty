@@ -1,18 +1,13 @@
 import ml5 from 'ml5';
 import { connect, createLocalTracks } from 'twilio-video';
 
-import { drawKeypoints, drawSkeleton, poseSimilarity } from './utils';
-import { API_HOST } from './constants';
-import { TEST_TOKEN } from './secrets';
+import { getTwilioToken } from './api_utils';
+import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const MIN_PART_CONFIDENCE = 0.5;
+
 const token_url = `http://127.0.0.1:5000/getToken/`;
-
-// async function createRoom(){
-//   let response = await fetch('http://127.0.0.1:5000/createRoom');
-
-// }
 
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('room')) {
@@ -20,32 +15,27 @@ if (!urlParams.has('room')) {
   urlParams.set('room', hash);
   window.location.search = urlParams.toString();
 }
-const roomname = urlParams.get('room');
-// const room = await createRoom();
-
-// const clientID = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+const ROOM_ID = urlParams.get('room');
 
 document.addEventListener("DOMContentLoaded", run);
 
-
 let jsondata;    
-fetch(token_url + roomname).then(
-        function(u){ return u.text();}
-      ).then(
-        function(json){
-          jsondata = json;
-        }
-      )
+fetch(token_url + ROOM_ID).then(
+  function(u){ return u.text();}
+).then(
+  function(json){
+    jsondata = json;
+  }
+);
 
 // TODO: create room based on urlParams. and get access token from flask using room and client id
-
 createLocalTracks({
   audio: true,
   video: { width: 640 }
 }).then(localTracks => {
   return connect(jsondata,
                 {
-                  name: `${roomname}`,
+                  name: `${ROOM_ID}`,
                   tracks: localTracks
                 });
 }).then(room => {
