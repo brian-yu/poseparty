@@ -33,7 +33,8 @@ function Room() {
   const [gameState, setGameState] = useState(GameStateEnum.Waiting);
   const [roundState, setRoundState] = useState(RoundStateEnum.Ended);
   const [currentRound, setCurrentRound] = useState(0);
-  const [currentScore, setCurrentScore] = useState(0);
+  const [correctFrames, setCorrectFrames] = useState(0);
+  const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
   const [imageName, setImageName] = useState(null);
   const [imagePoseVector, setImagePoseVector] = useState(null);
@@ -66,13 +67,16 @@ function Room() {
           }
           setRoundState(RoundStateEnum.Started);
           setCurrentRound(data.currentRound);
-          setCurrentScore(0);
+          setCorrectFrames(0);
+          setTotalFrames(0);
           setLeaderboard(newLeaderboard);
           // TODO: call function to display new scores
           // Update images/pose
           // Start new round animation
           const finishRound = () => {
-            setCurrentScore(3496); // Mock score update
+            // TODO: Update frame counts elsewhere
+            setCorrectFrames(3496);
+            setTotalFrames(10000);
             setRoundState(RoundStateEnum.Ended);
           }
           setTimeout(function() {finishRound()}, data.roundDuration * 1000);
@@ -90,7 +94,7 @@ function Room() {
           console.log('Unrecognized game action!', data);
       }
     }
-  }, [gameState, lastMessage]);
+  }, [lastMessage]);
 
   // Join the game
   useEffect(() => {
@@ -110,9 +114,12 @@ function Room() {
   // Submit Score
   useEffect(() => {
     if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended) {
-      sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score: currentScore, room: roomID}));
+      // TODO: check for NaN or Infinity
+      const score = Math.round((correctFrames/totalFrames) * 10000);
+      // Should probably include round number here if we have the frame counts as dependencies
+      sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
-  }, [currentScore, gameState, roomID, roundState, sendMessage]);
+  }, [correctFrames, totalFrames, gameState, roomID, roundState, sendMessage]);
 
   /* ============================================ POSENET ============================================ */
 
