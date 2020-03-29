@@ -1,4 +1,14 @@
 
+.main-container {
+    display: flex;
+    justify-content: center;
+}
+
+.local-participant, .local-participant > video {
+    width: 640px;
+    height: 480px;
+}
+
 .remote-participants {
     display: flex;
     justify-content: space-around;

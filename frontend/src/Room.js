@@ -85,14 +85,22 @@ function Room() {
       <p>Send this link to your friends: <a href={window.location.href}>{ window.location.href }</a></p>
       {/* <p>{token}</p> */}
 
-      <div className="local-participant">
-        {room ? (
-          <Participant
-            key={room.localParticipant.sid}
-            participant={room.localParticipant}
-          />
-        ) : null}
+      <div className="main-container">
+        <img className="reference-img" 
+          src={process.env.PUBLIC_URL + '/img/tadasana.png'}/>
+
+        <div className="local-participant">
+          {room ? (
+            <Participant
+              key={room.localParticipant.sid}
+              participant={room.localParticipant}
+            />
+          ) : null}
+        </div>
+
       </div>
+
+      
       {remoteParticipants.length > 0 ? (
         <>
           <h3>Remote Participants</h3>
