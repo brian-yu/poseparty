@@ -13,6 +13,7 @@ import { SOCKET_HOST } from './constants';
 import './Room.css';
 
 const MIN_POSE_CONFIDENCE = 0.1;
+const GameStateEnum = Object.freeze({ Waiting: 1, Playing: 2, Finished: 3 });
 
 function Room() {
 
