@@ -7,8 +7,6 @@ import {
 } from "react-router-dom";
 
 import Room from './Room';
-
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -23,7 +21,7 @@ function App() {
     <div className="App">
       <Router>
         <div>
-          <Link to="/"><h1>PoseParty</h1></Link>
+          <a href="/"><h1>PoseParty</h1></a>
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Switch>
