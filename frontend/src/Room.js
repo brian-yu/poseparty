@@ -218,7 +218,6 @@ function Room() {
           src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
 
         <div className="local-participant">
-<<<<<<< HEAD
           <h3>{room && room.localParticipant.identity}</h3>
           <div className='video-wrapper'>
             {room ? (
@@ -239,25 +238,6 @@ function Room() {
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
           </div>
-=======
-          {room ? (
-            <PoseNet
-              className="posenet"
-              input={getImagePose ? imageRef.current : false}
-              modelConfig={{
-                architecture: 'ResNet50',
-                quantBytes: 4,
-                outputStride: 32,
-                inputResolution: 193,
-              }}
-              inferenceConfig={{
-                decodingMethod: 'single-person',
-                maxDetections: 1,
-              }}
-              onEstimate={(pose) => handlePose(pose)}
-            />
-          ) : null}
->>>>>>> 14171f8761aeaba5accd45c4643f94fcf8561341
         </div>
       </div>
 
