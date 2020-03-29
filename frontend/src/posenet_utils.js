@@ -10,10 +10,18 @@ export const poseSimilarity = (pose1, pose2) => {
 };
 
 function getPoseVector(pose) {
+  const xPos = pose.keypoints.map(k => k.position.x);
+  const yPos = pose.keypoints.map(k => k.position.y);
+
+  let minX = Math.min(...xPos);
+  // let maxX = Math.max(...keypoint.position.x);
+  let minY = Math.min(...yPos);
+  // let maxY = Math.max(...keypoint.position.y);
+
   const vector = [];
-  for (const keypoint of pose.keypoints) {
-    vector.push(keypoint.position.x);
-    vector.push(keypoint.position.y);
+  for (let i = 0; i < xPos.length; i++) {
+    vector.push(xPos[i] - minX);
+    vector.push(yPos[i] - minY);
   }
   return vector;
 }
