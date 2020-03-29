@@ -15,6 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    height: 500px;
 }
 
 .local-participant > .video-wrapper > video {
@@ -32,11 +33,13 @@
     max-width: 560px;
     max-height: 420px;
     margin-right: 150px;
+    width: auto;
+    height: auto;
 }
 
-.local-participant > video, .posenet {
-    width: 560px;
-    height: 420px;
+.posenet {
+    max-width: 560px;
+    max-height: 420px;
 }
 
 .party-title {

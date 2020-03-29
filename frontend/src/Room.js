@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import Video from 'twilio-video';
 import PoseNet from './posenet/components/PoseNet';
@@ -37,7 +37,12 @@ function Room() {
   const [correctFrames, setCorrectFrames] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
+  const imageRef = useRef();
   const [imageName, setImageName] = useState('tadasana.png');
+  // set getImagePose to true whenever you want to get the pose of the
+  // reference image. set it to false immediately after you get the
+  // result pose vector so that the posenet can run on the video.
+  const [getImagePose, setGetImagePose] = useState(true);
   const [imagePoseVector, setImagePoseVector] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
@@ -187,6 +192,10 @@ function Room() {
   /* ============================================ POSENET ============================================ */
 
   const handlePose = (pose) => {
+    if (getImagePose) {
+      console.log(pose)
+      setGetImagePose(false);
+    }
     if (!imagePoseVector) {
       return;
     }
@@ -205,9 +214,11 @@ function Room() {
 
       <div className="main-container">
         <img className="reference-img" 
+          ref={imageRef}
           src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
 
         <div className="local-participant">
+<<<<<<< HEAD
           <h3>{room && room.localParticipant.identity}</h3>
           <div className='video-wrapper'>
             {room ? (
@@ -228,6 +239,25 @@ function Room() {
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
           </div>
+=======
+          {room ? (
+            <PoseNet
+              className="posenet"
+              input={getImagePose ? imageRef.current : false}
+              modelConfig={{
+                architecture: 'ResNet50',
+                quantBytes: 4,
+                outputStride: 32,
+                inputResolution: 193,
+              }}
+              inferenceConfig={{
+                decodingMethod: 'single-person',
+                maxDetections: 1,
+              }}
+              onEstimate={(pose) => handlePose(pose)}
+            />
+          ) : null}
+>>>>>>> 14171f8761aeaba5accd45c4643f94fcf8561341
         </div>
       </div>
 
