@@ -47,7 +47,7 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer }) => {
     if (videoTrack) {
       videoTrack.attach(videoRef.current);
       
-      if (setVideoRef !== null && setCanvasRef !== null) {
+      if (isPlayer && setVideoRef && setCanvasRef) {
         setVideoRef(videoRef);
         setCanvasRef(canvasRef);
       }
@@ -73,7 +73,7 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer }) => {
       <h3>{participant.identity}</h3>
       { isPlayer ?
         <>
-          <canvas ref={canvasRef} width="640" height="480"></canvas>
+          <canvas ref={canvasRef} width="640" height="480" style={{transform: 'scaleX(-1)'}}></canvas>
           <video ref={videoRef} width="640" height="480" autoPlay={true} className="hidden" />
         </>
         : <video ref={videoRef} autoPlay={true} />
