@@ -20,15 +20,16 @@ function Room() {
 
   /* ============================================ INIT STATE ============================================ */
 
+  // Room State
   const { roomID } = useParams();
   const [token, setToken] = useState(null);
   const [username, setUsername] = useState(null);
-  const [ready, setReady] = useState(false);
-  
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [sendMessage, lastMessage, readyState, getWebSocket] = useWebSocket(SOCKET_HOST);
 
+  // Game State
+  const [ready, setReady] = useState(false);
   const [gameState, setGameState] = useState(GameStateEnum.Waiting);
   const [roundState, setRoundState] = useState(RoundStateEnum.Ended);
   const [currentRound, setCurrentRound] = useState(0);
@@ -36,6 +37,11 @@ function Room() {
   const [leaderboard, setLeaderboard] = useState({});
   const [imageName, setImageName] = useState(null);
   const [imagePoseVector, setImagePoseVector] = useState(null);
+
+  // PoseNet State
+  const [videoRef, setVideoRef] = useState(null);
+  const [canvasRef, setCanvasRef] = useState(null);
+  const [poseNet, setPoseNet] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
 
@@ -110,11 +116,6 @@ function Room() {
   }, [gameState, roundState]);
 
   /* ============================================ POSENET ============================================ */
-
-  const [videoRef, setVideoRef] = useState(null);
-  const [canvasRef, setCanvasRef] = useState(null);
-
-  const [poseNet, setPoseNet] = useState(null);
 
   // load poseNet.
   useEffect(() => {
