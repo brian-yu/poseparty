@@ -143,7 +143,6 @@ function Room() {
     if (!videoRef || !canvasRef || !poseNet) {
       return;
     }
-    console.log('VIDEO', videoRef.current)
 
     const ctx = canvasRef.current.getContext('2d');
     const video = videoRef.current;
@@ -151,7 +150,6 @@ function Room() {
     poseNet.video = video;
 
     let videoPose = null;
-
     poseNet.on('pose', (results) => {
       videoPose = results[0];
     });
@@ -161,7 +159,6 @@ function Room() {
       ctx.drawImage(video, 0, 0, 640, 480);
       // We can call both functions to draw all keypoints and the skeletons
       if (videoPose !== null) {
-        // console.log(pose)
         if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
           drawKeypoints(videoPose, 0.2, ctx);
           drawSkeleton(videoPose, ctx);
@@ -171,7 +168,6 @@ function Room() {
     }
     // Loop over the drawCameraIntoCanvas function
     drawCameraIntoCanvas();
-    
   }, [videoRef, canvasRef, poseNet]);
 
   /* ============================================ TWILIO ============================================ */
@@ -261,13 +257,11 @@ function Room() {
             />
           ) : null}
         </div>
-
       </div>
 
-      
       {remoteParticipants.length > 0 ? (
         <>
-          <h3>Remote Participants</h3>
+          <h3>The Party</h3>
           <div className="remote-participants">{remoteParticipants}</div>
         </>
       ) : null}
