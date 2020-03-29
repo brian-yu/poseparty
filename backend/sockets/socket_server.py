@@ -74,12 +74,12 @@ class Game:
 
         logging.info('added player {} to game in room {}'.format(player.name, self.room))
     
-    def remove_player(self, websocket):
+    async def remove_player(self, websocket):
         logging.info('removed player {} from game in room {}'.format(self.players[websocket].name, self.room))
         self.players.pop(websocket)
 
         if len(self.players) == 0:
-            self.end()
+            await self.end()
     
     def get_scores(self):
         return {
@@ -203,7 +203,7 @@ async def handler(websocket, path):
                 logging.error("unsupported event: {}".format(data))
     finally:
         game = USERS[websocket]
-        game.remove_player(websocket)
+        await game.remove_player(websocket)
         USERS.pop(websocket)
         pass
 

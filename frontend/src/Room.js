@@ -205,7 +205,7 @@ function Room() {
       return;
     }
 
-    if (!imagePose || !pose) {
+    if (!imagePose || !pose || gameState === GameStateEnum.Finished) {
       return;
     }
 
