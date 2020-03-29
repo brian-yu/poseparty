@@ -14,7 +14,14 @@
 .main-container {
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-end;
+}
+
+.reference-img, .video-wrapper > video, .video-wrapper > canvas {
+    border-radius: 15px;
+    border: 10px;
+    border-color: #74b9ff;
+    border-style: solid;
 }
 
 .reference-img {
