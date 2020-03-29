@@ -94,7 +94,7 @@ function Room() {
           console.log('Unrecognized game action!', data);
       }
     }
-  }, [gameState, lastMessage]);
+  }, [lastMessage]);
 
   // Join the game
   useEffect(() => {
@@ -116,7 +116,8 @@ function Room() {
     if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended) {
       // TODO: check for NaN or Infinity
       const score = Math.round((correctFrames/totalFrames) * 10000);
-      sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID}));
+      // Should probably include round number here if we have the frame counts as dependencies
+      sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
   }, [correctFrames, totalFrames, gameState, roomID, roundState, sendMessage]);
 
