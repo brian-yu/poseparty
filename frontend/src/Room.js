@@ -94,7 +94,7 @@ function Room() {
           console.log('Unrecognized game action!', data);
       }
     }
-  }, [lastMessage]);
+  }, [gameState, lastMessage]);
 
   // Join the game
   useEffect(() => {
@@ -102,14 +102,14 @@ function Room() {
       sendMessage(JSON.stringify({ action: 'JOIN_GAME', name: username, room: roomID}));
       setReady(true); // TODO: change this elsewhere
     }
-  }, [username]);
+  }, [roomID, sendMessage, username]);
 
   // Set ready message
   useEffect(() => {
     if (ready === true) {
       sendMessage(JSON.stringify({ action: 'SET_READY', room: roomID}));
     }
-  }, [ready]);
+  }, [ready, roomID, sendMessage]);
 
   // Submit Score
   useEffect(() => {
@@ -118,7 +118,7 @@ function Room() {
       const score = Math.round((correctFrames/totalFrames) * 10000);
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID}));
     }
-  }, [gameState, roundState]);
+  }, [currentScore, gameState, roomID, roundState, sendMessage]);
 
   /* ============================================ POSENET ============================================ */
 
@@ -142,14 +142,13 @@ function Room() {
     });
     
     setPoseNet(model);
-  });
+  }, [poseNet]);
 
   // setup canvas
   useEffect(() => {
     if (!videoRef || !canvasRef || !poseNet) {
       return;
     }
-    console.log('VIDEO', videoRef.current)
 
     const ctx = canvasRef.current.getContext('2d');
     const video = videoRef.current;
@@ -157,7 +156,6 @@ function Room() {
     poseNet.video = video;
 
     let videoPose = null;
-
     poseNet.on('pose', (results) => {
       videoPose = results[0];
     });
@@ -167,7 +165,6 @@ function Room() {
       ctx.drawImage(video, 0, 0, 640, 480);
       // We can call both functions to draw all keypoints and the skeletons
       if (videoPose !== null) {
-        // console.log(pose)
         if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
           drawKeypoints(videoPose, 0.2, ctx);
           drawSkeleton(videoPose, ctx);
@@ -177,7 +174,6 @@ function Room() {
     }
     // Loop over the drawCameraIntoCanvas function
     drawCameraIntoCanvas();
-    
   }, [videoRef, canvasRef, poseNet]);
 
   /* ============================================ TWILIO ============================================ */
@@ -189,7 +185,7 @@ function Room() {
       setToken(token);
     }
     getToken();
-  }, []);
+  }, [roomID]);
 
   // retrieve connected participants and create listeners for participant
   // connections.
@@ -239,7 +235,7 @@ function Room() {
         }
       });
     };
-  }, [token]);
+  }, [roomID, token]);
 
   const remoteParticipants = participants.map(participant => (
     <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
@@ -268,13 +264,11 @@ function Room() {
             />
           ) : null}
         </div>
-
       </div>
 
-      
       {remoteParticipants.length > 0 ? (
         <>
-          <h3>Remote Participants</h3>
+          <h3>The Party</h3>
           <div className="remote-participants">{remoteParticipants}</div>
         </>
       ) : null}
