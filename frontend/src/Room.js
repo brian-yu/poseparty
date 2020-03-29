@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import Video from 'twilio-video';
+import ml5 from 'ml5';
 
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
+import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 
 import './Room.css';
+
+const MIN_POSE_CONFIDENCE = 0.1;
 
 function Room() {
 
@@ -16,11 +20,73 @@ function Room() {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
+  const [videoRef, setVideoRef] = useState(null);
+  const [canvasRef, setCanvasRef] = useState(null);
+
+  const [poseNet, setPoseNet] = useState(null);
+
+  // load poseNet.
+  useEffect(() => {
+    if (poseNet) {
+      return;
+    }
+
+    const modelReady = () => {
+      console.log('model ready');
+    }
+
+    const model = ml5.poseNet(modelReady, {
+      architecture: 'ResNet50',
+      detectionType: 'single',
+      quantBytes: 4,
+      outputStride: 32,
+      inputResolution: 193, // default 257
+      maxPoseDetections: 1,
+    });
+    
+    setPoseNet(model);
+  });
+
+  // setup canvas
+  useEffect(() => {
+    if (!videoRef || !canvasRef || !poseNet) {
+      return;
+    }
+    console.log('VIDEO', videoRef.current)
+
+    const ctx = canvasRef.current.getContext('2d');
+    const video = videoRef.current;
+
+    poseNet.video = video;
+
+    let videoPose = null;
+
+    poseNet.on('pose', (results) => {
+      videoPose = results[0];
+    });
+
+    const drawCameraIntoCanvas = () => {
+      // Draw the video element into the canvas
+      ctx.drawImage(video, 0, 0, 640, 480);
+      // We can call both functions to draw all keypoints and the skeletons
+      if (videoPose !== null) {
+        // console.log(pose)
+        if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
+          drawKeypoints(videoPose, 0.2, ctx);
+          drawSkeleton(videoPose, ctx);
+        }
+      }
+      window.requestAnimationFrame(drawCameraIntoCanvas);
+    }
+    // Loop over the drawCameraIntoCanvas function
+    drawCameraIntoCanvas();
+    
+  }, [videoRef, canvasRef, poseNet]);
+
   // get token, which only depends on roomID.
   useEffect(() => {
     const getToken = async () => {
       const token = await getTwilioToken(roomID);
-      console.log(token)
       setToken(token);
     }
     getToken();
@@ -96,6 +162,9 @@ function Room() {
             <Participant
               key={room.localParticipant.sid}
               participant={room.localParticipant}
+              setVideoRef={setVideoRef}
+              setCanvasRef={setCanvasRef}
+              isPlayer={true}
             />
           ) : null}
         </div>
