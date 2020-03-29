@@ -40,6 +40,9 @@ need to handle:
 # Maps room IDs to Game objects.
 ROOMS = {}
 
+# map websockets to games
+USERS = {}
+
 # Need to keep in sync with /frontend/public/img/*.
 IMAGE_NAMES = ['dance.png', 'eagle.png', 'garland.png', 'gate.png', 'half-moon.png', 'parivrtta-trikonasana.png', 'vrksasana.png', 
 'warrior-I.png', 'warrior-II.png']
@@ -70,6 +73,10 @@ class Game:
         self.players[websocket] = player
 
         logging.info('added player {} to game in room {}'.format(player.name, self.room))
+    
+    def remove_player(self, websocket):
+        logging.info('removed player {} from game in room {}'.format(self.players[websocket].name, self.room))
+        self.players.pop(websocket)
     
     def get_scores(self):
         return {
@@ -155,11 +162,10 @@ ws.send(JSON.stringify({action: 'FINISH_ROUND', room: '1', score: '5'}))
 
 '''
 
-
-
 async def join_or_create_game(websocket, room, name):
     ROOMS.setdefault(room, Game(room))
     game = ROOMS[room]
+    USERS[websocket] = game
     game.add_player(websocket, name)
 
 async def handler(websocket, path):
@@ -193,6 +199,9 @@ async def handler(websocket, path):
             else:
                 logging.error("unsupported event: {}".format(data))
     finally:
+        game = USERS[websocket]
+        game.remove_player(websocket)
+        USERS.pop(websocket)
         pass
 
 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
