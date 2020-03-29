@@ -111,7 +111,7 @@ PoseNet.propTypes = {
    * If input is not specified react-posenet try to [getUserMedia](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)<br/>
    * @see [tfjs-posenet document](https://github.com/tensorflow/tfjs-models/tree/master/posenet#params-in-estimatesinglepose)
    */
-  input: PropTypes.element,
+  input: PropTypes.oneOfType([PropTypes.element, PropTypes.bool]),
   /**
    * gets called after estimation. [poses](https://github.com/tensorflow/tfjs-models/tree/master/posenet#keypoints) is a passed parameter
    */
