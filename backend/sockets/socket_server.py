@@ -3,6 +3,7 @@ import json
 import logging
 import websockets
 import random
+import ssl
 
 logging.basicConfig()
 
@@ -37,6 +38,10 @@ need to handle:
 
 # Maps room IDs to Game objects.
 ROOMS = {}
+
+# Need to keep in sync with /frontend/public/img/*.
+IMAGE_NAMES = ['dance.png', 'eagle.png', 'garland.png', 'gate.png', 'half-moon.png', 'parivrtta-trikonasana.png', 'vrksasana.png', 
+'warrior-I.png', 'warrior-II.png']
 
 class Player:
     def __init__(self, websocket, game, name):
@@ -82,8 +87,8 @@ class Game:
 
         await self.notify_players({
             'action': 'START_ROUND',
-            'roundDuration': 10, # TODO: random length
-            'imageName': 'vrksasana.png', # TODO: randomly choose
+            'roundDuration': random.randint(5, 15), # TODO: tune duration?
+            'imageName': random.choice(IMAGE_NAMES),
             'currentRound': self.current_round,
             'totalRounds': self.total_rounds,
             'prevScores': self.get_scores(),
@@ -116,7 +121,7 @@ class Game:
         
 
     async def notify_players(self, data):
-        for name, player in self.players.items():
+        for _, player in self.players.items():
             await player.send(data)
 
 '''
@@ -153,7 +158,7 @@ async def handler(websocket, path):
             data = json.loads(message)
 
             if "action" not in data:
-                logging.error("no action: {}", data)
+                logging.error("no action: {}".format(data))
                 continue
 
             if data["action"] == "JOIN_GAME":
@@ -163,25 +168,26 @@ async def handler(websocket, path):
             elif data["action"] == "SET_READY":
                 room = data['room']
                 if room not in ROOMS:
-                    logging.error("no game in room: {}", data)
+                    logging.error("no game in room: {}".format(data))
                     continue
                 game = ROOMS[room]
                 await game.ready_player(websocket)
             elif data["action"] == "FINISH_ROUND":
                 room = data['room']
                 if room not in ROOMS:
-                    logging.error("no game in room: {}", data)
+                    logging.error("no game in room: {}".format(data))
                     continue
                 game = ROOMS[room]
                 score = data['score']
                 await game.send_score(websocket, score)
             else:
-                logging.error("unsupported event: {}", data)
+                logging.error("unsupported event: {}".format(data))
     finally:
         pass
 
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-start_server = websockets.serve(handler, "0.0.0.0", 6789)
+start_server = websockets.serve(handler, "0.0.0.0", 6789, ssl=ssl_context)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
