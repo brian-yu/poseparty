@@ -82,8 +82,10 @@ function Room() {
 
   return (
     <div className="room">
-      <p>Send this link to your friends: <a href={window.location.href}>{ window.location.href }</a></p>
-      {/* <p>{token}</p> */}
+      <div className="header">
+        <h1 className="title"><a href="/">PoseParty</a></h1>
+        <p>Send this link to your friends: <a href={window.location.href}>{ window.location.href }</a></p>
+      </div>
 
       <div className="main-container">
         <img className="reference-img" 
