@@ -26,6 +26,10 @@ function Room() {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [sendMessage, lastMessage, readyState, getWebSocket] = useWebSocket(SOCKET_HOST);
+
+  const [videoRef, setVideoRef] = useState(null);
+  const [canvasRef, setCanvasRef] = useState(null);
+  const [poseNet, setPoseNet] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
 
@@ -85,11 +89,6 @@ function Room() {
   }, [ready]);
 
   /* ============================================ POSENET ============================================ */
-
-  const [videoRef, setVideoRef] = useState(null);
-  const [canvasRef, setCanvasRef] = useState(null);
-
-  const [poseNet, setPoseNet] = useState(null);
 
   // load poseNet.
   useEffect(() => {
