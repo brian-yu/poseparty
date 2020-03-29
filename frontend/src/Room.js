@@ -219,7 +219,7 @@ function Room() {
     // on initial pose, set ready if true.
     // exploits the fact that ready is only changed once.
     // TODO: tune threshold
-    if (!ready && s < 0.1) {
+    if (s > 0.01 && !ready && s < 0.1) {
       setReady(true);
     }
   }
@@ -259,7 +259,7 @@ function Room() {
                   }}
                   onEstimate={(pose) => handlePose(pose)}
                 />
-                <h1>{similarity ? Math.round((1-similarity)*100) : null}</h1>
+                <h1>{ready && similarity ? Math.round((1-similarity)*100) : null}</h1>
                 {ready ? null :
                   <>
                     <h1>Get in position to ready up!</h1>
