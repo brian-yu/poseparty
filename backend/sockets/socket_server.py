@@ -1,8 +1,8 @@
 import asyncio
 import json
 import logging
-import websockets
 import random
+from aiohttp import web
 
 logging.basicConfig()
 
@@ -47,7 +47,7 @@ class Player:
         self.ready = False
     
     async def send(self, data):
-        await self.websocket.send(json.dumps(data))
+        await self.websocket.send_str(json.dumps(data))
 
 class Game:
     def __init__(self, room):
@@ -123,7 +123,7 @@ class Game:
 TEST SEQUENCE:
 In JS:
 
-ws = new WebSocket('ws://localhost:6789')
+ws = new WebSocket('ws://localhost:8080')
 
 ws.onmessage = function (event) {
                 data = JSON.parse(event.data);
@@ -147,10 +147,16 @@ async def join_or_create_game(websocket, room, name):
     game = ROOMS[room]
     game.add_player(websocket, name)
 
-async def handler(websocket, path):
+# async def handler(websocket, path):
+async def handler(request):
+
+    websocket = web.WebSocketResponse()
+    await websocket.prepare(request)
+
     try:
         async for message in websocket:
-            data = json.loads(message)
+
+            data = json.loads(message.data)
 
             if "action" not in data:
                 logging.error("no action: {}", data)
@@ -181,7 +187,8 @@ async def handler(websocket, path):
         pass
 
 
-start_server = websockets.serve(handler, "localhost", 6789)
+app = web.Application()
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+app.add_routes([web.get('/', handler)])
+
+

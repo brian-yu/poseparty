@@ -1,6 +1,3 @@
-flask
-twilio
-websockets
 asyncio
-flask-cors
 gunicorn==19.7.1
+aiohttp
