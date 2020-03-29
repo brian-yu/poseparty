@@ -14,6 +14,7 @@ import './Room.css';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 const GameStateEnum = Object.freeze({ Waiting: 1, Playing: 2, Finished: 3 });
+const RoundStateEnum = Object.freeze({ Started: 1, Ended: 2});
 
 function Room() {
 
@@ -29,12 +30,12 @@ function Room() {
   const [sendMessage, lastMessage, readyState, getWebSocket] = useWebSocket(SOCKET_HOST);
 
   const [gameState, setGameState] = useState(GameStateEnum.Waiting);
+  const [roundState, setRoundState] = useState(RoundStateEnum.Ended);
   const [currentRound, setCurrentRound] = useState(0);
   const [currentScore, setCurrentScore] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
   const [imageName, setImageName] = useState(null);
   const [imagePoseVector, setImagePoseVector] = useState(null);
-  
   
   /* ============================================ WEBSOCKETS ============================================ */
 
@@ -55,16 +56,21 @@ function Room() {
           if (gameState === GameStateEnum.Finished) {
             console.error('invalid game state transition');
             return;
-          } if (gameState === GameStateEnum.Waiting) {
+          } else if (gameState === GameStateEnum.Waiting) {
             setGameState(GameStateEnum.Playing);
           }
+          setRoundState(RoundStateEnum.Started);
           setCurrentRound(data.currentRound);
           setCurrentScore(0);
           setLeaderboard(newLeaderboard);
           // TODO: call function to display new scores
           // Update images/pose
           // Start new round animation
-          // setTimeout(this.finishRound(), data.roundDuration * 100);
+          const finishRound = () => {
+            setCurrentScore(10); // MOCK
+            setRoundState(RoundStateEnum.Ended);
+          }
+          setTimeout(function() {finishRound()}, data.roundDuration * 1000);
           break;
         case 'END_GAME':
           console.log('ENDING GAME!', data);
@@ -95,6 +101,13 @@ function Room() {
       sendMessage(JSON.stringify({ action: 'SET_READY', room: roomID}));
     }
   }, [ready]);
+
+  // Submit Score
+  useEffect(() => {
+    if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended) {
+      sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score: currentScore, room: roomID}));
+    }
+  }, [gameState, roundState]);
 
   /* ============================================ POSENET ============================================ */
 
