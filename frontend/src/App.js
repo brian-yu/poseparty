@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,6 +10,8 @@ import Room from './Room';
 import './App.css';
 
 function App() {
+
+  const [joinURL, setJoinURL] = useState();
 
   const generateRoomID = () => {
     return Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -32,7 +34,14 @@ function App() {
               <div className="home">
                 <Link to="/"><h1 className="display">PoseParty</h1></Link>
                 <h2>A social exercise game you can play while social distancing.</h2>
+                <h3>Create a room, invite some friends, and try your hardest to match the poses shown to you over the course of the game!</h3>
                 <Link to={`/room/${roomID}`}><div className="button display">Create a Room</div></Link>
+                <h2>Or</h2>
+                <div className="join">
+                  <input className="display" onChange={ e => setJoinURL(e.target.value) } placeholder="Room ID"></input>
+                  <Link to={`/room/${joinURL}`}><div className="button display secondary">Join a Room</div></Link>
+                </div>
+                
               </div>
             </Route>
           </Switch>
