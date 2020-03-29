@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import Room from './Room';
+import LogPose from './LogPose';
 import './App.css';
 
 function App() {
@@ -30,6 +31,9 @@ function App() {
             <Route path="/room/:roomID">
               <Room />
             </Route>
+            <Route path="/pose/:imageName">
+              <LogPose />
+            </Route>
             <Route path="/">
               <div className="home">
                 <Link to="/"><h1 className="display">PoseParty</h1></Link>
@@ -41,7 +45,6 @@ function App() {
                   <input className="display" onChange={ e => setJoinURL(e.target.value) } placeholder="Room ID"></input>
                   <Link to={`/room/${joinURL}`}><div className="button display secondary">Join a Room</div></Link>
                 </div>
-                
               </div>
             </Route>
           </Switch>
