@@ -4,6 +4,7 @@ import logging
 import websockets
 import random
 import ssl
+import argparse
 
 logging.basicConfig()
 
@@ -190,7 +191,11 @@ async def handler(websocket, path):
 
 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-start_server = websockets.serve(handler, "0.0.0.0", 6789)
+parser = argparse.ArgumentParser(description='host')
+parser.add_argument('--host', default='0.0.0.0', type=str)
+args = parser.parse_args()
+
+start_server = websockets.serve(handler, args.host, 6789)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
