@@ -43,16 +43,14 @@ export default function PoseNet({
     const ctx = canvasRef.current.getContext("2d")
     const intervalID = setInterval(async () => {
       try {
-        const poses = await net.estimatePoses(image, inferenceConfigRef.current)
-        const confidentPoses = getConfidentPoses(
-          poses,
-          minPoseConfidence,
-          minPartConfidence
-        )
+        const pose = await net.estimateSinglePose(image, inferenceConfigRef.current)
+        // console.log(pose)
+        if (pose.score < minPartConfidence) {
+          return;
+        }
         ctx.drawImage(image, 0, 0, width, height)
-        onEstimateRef.current(confidentPoses)
-        confidentPoses.forEach(({ keypoints }) => drawKeypoints(ctx, keypoints))
-        // confidentPoses.forEach(({ keypoints }) => drawSkeleton(ctx, keypoints))
+        onEstimateRef.current(pose)
+        drawKeypoints(ctx, pose.keypoints)
       } catch (err) {
         clearInterval(intervalID)
         setErrorMessage(err.message)
