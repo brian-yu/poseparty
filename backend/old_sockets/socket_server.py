@@ -61,7 +61,7 @@ class Game:
         player = Player(websocket, self, name)
         self.players[websocket] = player
 
-        logging.info(f'added player {player.name} to game in room {self.room}')
+        logging.info('added player {} to game in room {}'.format(player.name, self.room))
     
     def get_scores(self):
         return {
@@ -71,14 +71,14 @@ class Game:
     async def ready_player(self, websocket):
         self.players[websocket].ready = True
 
-        logging.info(f'player {self.players[websocket].name} ready for room {self.room}')
+        logging.info('player {} ready for room {}'.format(self.players[websocket].name, self.room))
 
         if sum([p.ready for p in self.players.values()]) == len(self.players):
             await self.start_round()
     
     async def start_round(self):
 
-        logging.info(f'starting round {self.current_round} in room {self.room}')
+        logging.info('starting round {} in room {}'.format(self.current_round, self.room))
 
         await self.notify_players({
             'action': 'START_ROUND',
@@ -93,7 +93,7 @@ class Game:
         player = self.players[websocket]
         player.round_scores.append(score)
 
-        logging.info(f'player {player.name} sending in score to room {self.room}')
+        logging.info('player {} sending in score to room {}'.format(player.name, self.room))
 
         # if all scores are in, start next round
         if sum(len(p.round_scores) == self.current_round + 1 for p in self.players.values()) == len(self.players):
@@ -105,7 +105,7 @@ class Game:
     
     async def end(self):
 
-        logging.info(f'game ending in room {self.room}')
+        logging.info('game ending in room {}'.format(self.room))
 
         await self.notify_players({
             'action': 'END_GAME',
