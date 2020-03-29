@@ -1,50 +1,5 @@
 import similarity from 'compute-cosine-similarity';
 
-// A function to draw ellipses over the detected keypoints
-export const drawKeypoints = (pose, minConfidence, ctx) => {
-  // For each pose detected, loop through all the keypoints
-  for (let j = 0; j < pose.pose.keypoints.length; j++) {
-    const keypoint = pose.pose.keypoints[j];
-    // Only draw an ellipse is the pose probability is bigger than 0.2
-    if (keypoint.score >= minConfidence) {
-      ctx.fillStyle = 'cyan';
-      ctx.beginPath();
-      ctx.arc(keypoint.position.x, keypoint.position.y, 3, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-  }
-};
-
-// A function to draw the skeletons
-export const drawSkeleton = (pose, ctx) => {
-  // For every skeleton, loop through all body connections
-  for (let j = 0; j < pose.skeleton.length; j++) {
-    const partA = pose.skeleton[j][0];
-    const partB = pose.skeleton[j][1];
-    ctx.strokeStyle = 'cyan';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(partA.position.x, partA.position.y);
-    ctx.lineTo(partB.position.x, partB.position.y);
-    ctx.stroke();
-  }
-};
-
-export const poseSimilarity = (pose1, pose2) => {
-  const poseVector1 = getPoseVector(pose1);
-  const poseVector2 = getPoseVector(pose2);
-  return cosineDistanceMatching(poseVector1, poseVector2);
-};
-
-function getPoseVector(pose) {
-  const vector = [];
-  for (const keypoint of pose.pose.keypoints) {
-    vector.push(keypoint.position.x);
-    vector.push(keypoint.position.y);
-  }
-  return vector;
-}
-
 // Cosine similarity as a distance function. The lower the number, the closer // the match
 // poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each
 // with an x and y. 17 * 2 = 32)
