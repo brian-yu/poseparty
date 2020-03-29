@@ -200,6 +200,8 @@ function Room() {
   /* ========================================= POSENET + SCORING ========================================= */
 
   const handlePose = (pose) => {
+    // FIX BUG.
+    // ACCIDENTALLY SETTING POSE TO BE USER POSE FROM LAST ROUND.
     if (getImagePose) {
 
       console.log('SETTING IMAGE POSE TO', imageName, pose)
