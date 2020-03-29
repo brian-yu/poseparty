@@ -246,7 +246,7 @@ function Room() {
     if (gameState === GameStateEnum.Waiting) {
       return (
         <>
-          <h1>Get in position to <span style={ready ? {color: 'green'} : {}}>ready up!</span></h1>
+          <h1>Get in position to <span style={ready ? {color: '#55efc4'} : {}}>ready up!</span></h1>
           <h2>The game will start when everyone is ready.</h2>
         </>
       );
