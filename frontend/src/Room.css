@@ -82,3 +82,17 @@
 .posenet {
     transform: scaleX(-1);
 }
+
+.similarity-correct {
+    background-color: green;
+    color:white;
+    border-radius: 4px;
+	transition: .4s;
+}
+
+.similarity-incorrect {
+    background-color: red;
+    color:white;
+    border-radius: 4px;
+	transition: .4s;
+}
