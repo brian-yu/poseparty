@@ -39,6 +39,7 @@
     max-height: 420px;
     width: auto;
     height: auto;
+    transform: scaleX(-1);
 }
 
 .posenet {
