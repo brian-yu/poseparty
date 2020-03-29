@@ -27,6 +27,14 @@ function Room() {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [sendMessage, lastMessage, readyState, getWebSocket] = useWebSocket(SOCKET_HOST);
+
+  const [gameState, setGameState] = useState(GameStateEnum.Waiting);
+  const [currentRound, setCurrentRound] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [leaderboard, setLeaderboard] = useState({});
+  const [imageName, setImageName] = useState(null);
+  const [imagePoseVector, setImagePoseVector] = useState(null);
+  
   
   /* ============================================ WEBSOCKETS ============================================ */
 
@@ -36,19 +44,23 @@ function Room() {
       const data = JSON.parse(lastMessage.data);
       console.log('got message!');
       console.log(data);
+      const newLeaderboard = Object.entries(data.prevScores).reduce((acc, entry) => {
+        const [key, value] = entry;
+        acc[key] = value.reduce((a, b) => a + b, 0);
+        return acc;
+      }, {})
       switch (data.action) {
         case 'START_ROUND':
           console.log('STARTING ROUND!', data);
-          // if (STATE.gameState === GameStateEnum.Finished) {
-          //   console.error('invalid game state transition');
-          //   return;
-          // } if (STATE.gameState === GameStateEnum.Waiting) {
-          //   STATE.gameState = GameStateEnum.Playing;
-          // }
-          // STATE.currentRound = data.currentRound;
-          // STATE.currentScore = 0;
-          // STATE.allScores = data.prevScores;
-          // STATE.totalScores = STATE.allScores.map((arr) => arr.reduce((a, b) => a + b, 0)); // SUM
+          if (gameState === GameStateEnum.Finished) {
+            console.error('invalid game state transition');
+            return;
+          } if (gameState === GameStateEnum.Waiting) {
+            setGameState(GameStateEnum.Playing);
+          }
+          setCurrentRound(data.currentRound);
+          setCurrentScore(0);
+          setLeaderboard(newLeaderboard);
           // TODO: call function to display new scores
           // Update images/pose
           // Start new round animation
@@ -56,13 +68,12 @@ function Room() {
           break;
         case 'END_GAME':
           console.log('ENDING GAME!', data);
-          // if (STATE.gameState !== GameStateEnum.Playing) {
-          //   console.error('invalid game state transition');
-          //   return;
-          // }
-          // STATE.gameState = GameStateEnum.Finished;
-          // STATE.allScores = data.prevScores;
-          // STATE.totalScores = STATE.allScores.map((arr) => arr.reduce((a, b) => a + b, 0)); // SUM
+          if (gameState !== GameStateEnum.Playing) {
+            console.error('invalid game state transition');
+            return;
+          }
+          setGameState(GameStateEnum.Finished);
+          setLeaderboard(newLeaderboard);
           break;
         default:
           console.log('Unrecognized game action!', data);
