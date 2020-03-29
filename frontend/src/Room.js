@@ -84,7 +84,7 @@ function Room() {
     }
   }, [ready]);
 
-  /* ============================================ TWILIO ============================================ */
+  /* ============================================ POSENET ============================================ */
 
   const [videoRef, setVideoRef] = useState(null);
   const [canvasRef, setCanvasRef] = useState(null);
@@ -148,6 +148,8 @@ function Room() {
     drawCameraIntoCanvas();
     
   }, [videoRef, canvasRef, poseNet]);
+
+  /* ============================================ TWILIO ============================================ */
 
   // get token, which only depends on roomID.
   useEffect(() => {
