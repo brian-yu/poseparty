@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import Video from 'twilio-video';
 import PoseNet from './posenet/components/PoseNet';
@@ -37,7 +37,12 @@ function Room() {
   const [correctFrames, setCorrectFrames] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
+  const imageRef = useRef();
   const [imageName, setImageName] = useState('tadasana.png');
+  // set getImagePose to true whenever you want to get the pose of the
+  // reference image. set it to false immediately after you get the
+  // result pose vector so that the posenet can run on the video.
+  const [getImagePose, setGetImagePose] = useState(true);
   const [imagePoseVector, setImagePoseVector] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
@@ -187,6 +192,10 @@ function Room() {
   /* ============================================ POSENET ============================================ */
 
   const handlePose = (pose) => {
+    if (getImagePose) {
+      console.log(pose)
+      setGetImagePose(false);
+    }
     if (!imagePoseVector) {
       return;
     }
@@ -205,12 +214,14 @@ function Room() {
 
       <div className="main-container">
         <img className="reference-img" 
+          ref={imageRef}
           src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
 
         <div className="local-participant">
           {room ? (
             <PoseNet
               className="posenet"
+              input={getImagePose ? imageRef.current : false}
               modelConfig={{
                 architecture: 'ResNet50',
                 quantBytes: 4,
