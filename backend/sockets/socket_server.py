@@ -3,6 +3,7 @@ import json
 import logging
 import websockets
 import random
+import os
 
 logging.basicConfig()
 
@@ -181,7 +182,7 @@ async def handler(websocket, path):
         pass
 
 
-start_server = websockets.serve(handler, "localhost", 6789)
+app = websockets.serve(handler, '0.0.0.0', os.environ['PORT'])
 
-asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_until_complete(app)
 asyncio.get_event_loop().run_forever()

@@ -1,4 +1,3 @@
-# [START gae_python37_app]
 import flask
 from flask import Flask, make_response
 from flask_cors import CORS, cross_origin
@@ -74,4 +73,3 @@ def getToken(room):
 if __name__ == "__main__":
     app.run(debug=True)
 
-# [END gae_python37_app]
