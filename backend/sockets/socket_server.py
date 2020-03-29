@@ -102,7 +102,7 @@ class Game:
         while image in self.used_images:
             image = random.choice(IMAGE_NAMES)
 
-        duration = random.randint(5, 15), # TODO: tune duration?
+        duration = random.randint(10, 20), # TODO: tune duration?
         self.used_images.add(image)
         
         await self.notify_players({
