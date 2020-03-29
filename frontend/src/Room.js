@@ -195,7 +195,8 @@ function Room() {
 
   const handlePose = (pose) => {
     if (getImagePose) {
-      console.log(pose)
+
+      console.log('SETTING IMAGE POSE TO', imageName, pose)
       setGetImagePose(false);
       setImagePose(pose);
 
@@ -210,7 +211,7 @@ function Room() {
     const s = poseSimilarity(imagePose, pose);
     // if similarity is 0, we have a bug since the
     // posenet is returning the pose for the image still.
-    if (s === 0) {
+    if (s < 0.01) {
       return;
     }
 
@@ -219,12 +220,42 @@ function Room() {
     // on initial pose, set ready if true.
     // exploits the fact that ready is only changed once.
     // TODO: tune threshold
-    if (s > 0.01 && !ready && s < 0.1) {
+    if (!ready && s < 0.1) {
       setReady(true);
     }
   }
 
   /* ============================================ RENDER ============================================ */
+
+  const DisplayScore = () => {
+    if (gameState === GameStateEnum.Waiting) {
+      return (
+        <>
+          <h1>Get in position to ready up!</h1>
+          <h2>The game will start when everyone is ready.</h2>
+        </>
+      );
+    }
+
+    if (!ready || !similarity || gameState === GameStateEnum.Finished) {
+      return null;
+    }
+
+    const score = (1-similarity)*100;
+    let str = null;
+    let color = null;
+    if (score >= 80) {
+      str = 'Excellent!'
+      color = 'green';
+    } else if (score >= 45) {
+      str = 'Okay';
+      color = 'orange';
+    } else {
+      str = 'Poor';
+      color = 'red';
+    }
+    return <h1 style={{color: color}}>{str}</h1>;
+  }
 
   return (
     <div className="room">
@@ -263,13 +294,7 @@ function Room() {
                   }}
                   onEstimate={(pose) => handlePose(pose)}
                 />
-                <h1>{ready && similarity ? Math.round((1-similarity)*100) : null}</h1>
-                {ready ? null :
-                  <>
-                    <h1>Get in position to ready up!</h1>
-                    <h2>The game will start when everyone is ready.</h2>
-                  </>
-                }
+                <DisplayScore />
               </>
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
