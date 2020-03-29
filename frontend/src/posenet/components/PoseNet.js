@@ -49,8 +49,9 @@ export default function PoseNet({
           return;
         }
         onEstimateRef.current(pose)
+        ctx.drawImage(image, 0, 0, width, height)
         if (!input) {
-          ctx.drawImage(image, 0, 0, width, height)
+          // ctx.drawImage(image, 0, 0, width, height)
           drawKeypoints(ctx, pose.keypoints)
         }
       } catch (err) {

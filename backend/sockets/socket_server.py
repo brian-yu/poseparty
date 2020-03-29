@@ -77,6 +77,9 @@ class Game:
     def remove_player(self, websocket):
         logging.info('removed player {} from game in room {}'.format(self.players[websocket].name, self.room))
         self.players.pop(websocket)
+
+        if len(self.players) == 0:
+            self.end()
     
     def get_scores(self):
         return {
