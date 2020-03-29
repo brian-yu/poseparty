@@ -1,38 +1,53 @@
 .App {
+  height: 100vh;
+}
+
+.App-container {
   text-align: center;
+  height: 100%;
+  padding: 30px;
+  background-color: #dff9fb;
+  
+  color: #0984e3;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.display {
+  font-family: 'Fredoka One', cursive;
+  font-weight: 400;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+a {
+  text-decoration: none;
+}
+a:visited {
+  color: inherit;
+}
+a:hover {
+  color: #6c5ce7;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+p {
+  font-weight: 600;
+}
+
+.home {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.button {
+  background-color: #0984e3;
   color: white;
+  height: 75px;
+  width: 250px;
+  font-size: 1.5em;
+  margin-top: 20px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button:hover {
+  background-color: #6c5ce7;
 }
