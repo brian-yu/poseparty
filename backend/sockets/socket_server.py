@@ -38,6 +38,10 @@ need to handle:
 # Maps room IDs to Game objects.
 ROOMS = {}
 
+# Need to keep in sync with /frontend/public/img/*.
+IMAGE_NAMES = ['dance.png', 'eagle.png', 'garland.png', 'gate.png', 'half-moon.png', 'parivrtta-trikonasana.png', 'vrksasana.png', 
+'warrior-I.png', 'warrior-II.png']
+
 class Player:
     def __init__(self, websocket, game, name):
         self.websocket = websocket
@@ -82,8 +86,8 @@ class Game:
 
         await self.notify_players({
             'action': 'START_ROUND',
-            'roundDuration': 10, # TODO: random length
-            'imageName': 'vrksasana.png', # TODO: randomly choose
+            'roundDuration': random.randing(5, 15), # TODO: tune duration?
+            'imageName': random.choice(IMAGE_NAMES),
             'currentRound': self.current_round,
             'totalRounds': self.total_rounds,
             'prevScores': self.get_scores(),

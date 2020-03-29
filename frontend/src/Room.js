@@ -65,6 +65,7 @@ function Room() {
           setCorrectFrames(0);
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
+          setImageName(data.imageName);
           // TODO: call function to display new scores
           // Update images/pose
           // Start new round animation
@@ -182,6 +183,16 @@ function Room() {
     <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
   ));
 
+  /* ============================================ POSENET ============================================ */
+
+  const handlePose = (results) => {
+    if (!imagePoseVector) {
+      return;
+    }
+  }
+
+  /* ============================================ RENDER ============================================ */
+
   return (
     <div className="room">
       <div className="header">
@@ -191,7 +202,7 @@ function Room() {
 
       <div className="main-container">
         <img className="reference-img" 
-          src={process.env.PUBLIC_URL + '/img/tadasana.png'}/>
+          src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
 
         <div className="local-participant">
           {room ? (
@@ -207,7 +218,7 @@ function Room() {
                 decodingMethod: 'single-person',
                 maxDetections: 1,
               }}
-              onEstimate={(pose) => console.log(pose)}
+              onEstimate={(results) => handlePose(results)}
             />
           ) : null}
         </div>
