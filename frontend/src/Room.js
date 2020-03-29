@@ -318,7 +318,7 @@ function Room() {
                 <PoseNet
                   className="posenet"
                   input={getImagePose ? imageRef.current : false}
-                  frameRate={10}
+                  frameRate={20}
                   modelConfig={{
                     architecture: 'ResNet50',
                     quantBytes: 4,
