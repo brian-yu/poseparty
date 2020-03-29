@@ -63,6 +63,8 @@ class Game:
         # map websocket to player objects
         self.players = {} 
 
+        self.used_images = set()
+
     def add_player(self, websocket, name):
         player = Player(websocket, self, name)
         self.players[websocket] = player
@@ -87,8 +89,12 @@ class Game:
         logging.info('starting round {} in room {}'.format(self.current_round, self.room))
 
         image = random.choice(IMAGE_NAMES)
-        duration = random.randint(5, 15), # TODO: tune duration?
+        while image in self.used_images:
+            image = random.choice(IMAGE_NAMES)
 
+        duration = random.randint(5, 15), # TODO: tune duration?
+        self.used_images.add(image)
+        
         await self.notify_players({
             'action': 'START_ROUND',
             'roundDuration': duration,
