@@ -10,5 +10,5 @@ export const API_HOST = PRODUCTION ? PROD_API_HOST : DEV_API_HOST;
 
 
 const DEV_SOCKET_HOST = 'ws://1fb66012.ngrok.io'; // socket server
-const PROD_SOCKET_HOST = 'wss://socket.poseparty.online:6789';
+const PROD_SOCKET_HOST = 'wss://socket.poseparty.brian.lol:6789';
 export const SOCKET_HOST = PRODUCTION ? PROD_SOCKET_HOST : DEV_SOCKET_HOST;
