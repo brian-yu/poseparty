@@ -6,6 +6,7 @@ import PoseNet from './posenet/components/PoseNet';
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
 import { poseSimilarity } from './posenet_utils';
+import { POSE_MAP } from './pose_vectors';
 
 import useWebSocket from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
@@ -36,7 +37,7 @@ function Room() {
   const [correctFrames, setCorrectFrames] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
-  const [imageName, setImageName] = useState(null);
+  const [imageName, setImageName] = useState('tadasana.png');
   const [imagePoseVector, setImagePoseVector] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
@@ -65,6 +66,7 @@ function Room() {
           setCorrectFrames(0);
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
+          setImageName(data.imageName);
           // TODO: call function to display new scores
           // Update images/pose
           // Start new round animation
@@ -182,6 +184,18 @@ function Room() {
     <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
   ));
 
+  /* ============================================ POSENET ============================================ */
+
+  const handlePose = (pose) => {
+    if (!imagePoseVector) {
+      return;
+    }
+
+    
+  }
+
+  /* ============================================ RENDER ============================================ */
+
   return (
     <div className="room">
       <div className="header">
@@ -191,7 +205,7 @@ function Room() {
 
       <div className="main-container">
         <img className="reference-img" 
-          src={process.env.PUBLIC_URL + '/img/tadasana.png'}/>
+          src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
 
         <div className="local-participant">
           <h3>{room && room.localParticipant.identity}</h3>
@@ -209,7 +223,7 @@ function Room() {
                   decodingMethod: 'single-person',
                   maxDetections: 1,
                 }}
-                onEstimate={(pose) => console.log(pose)}
+                onEstimate={(pose) => handlePose(pose)}
               />
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
