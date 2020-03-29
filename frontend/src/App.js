@@ -21,7 +21,7 @@ function App() {
     <div className="App">
       <Router>
         <div>
-          <a href="/"><h1>PoseParty</h1></a>
+          
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Switch>
@@ -29,6 +29,7 @@ function App() {
               <Room />
             </Route>
             <Route path="/">
+              <a href="/"><h1>PoseParty</h1></a>
               <h2>A social exercise game you can play while social distancing.</h2>
               <Link to={`/room/${roomID}`}>Create a Room</Link>
             </Route>
