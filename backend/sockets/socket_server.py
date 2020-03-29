@@ -192,7 +192,7 @@ async def handler(websocket, path):
 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
 parser = argparse.ArgumentParser(description='host')
-parser.add_argument('--host', default='0.0.0.0')
+parser.add_argument('--host', default='0.0.0.0', type=str)
 args = parser.parse_args()
 
 start_server = websockets.serve(handler, args.host, 6789)
