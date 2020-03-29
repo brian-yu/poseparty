@@ -87,7 +87,7 @@ class Game:
 
         await self.notify_players({
             'action': 'START_ROUND',
-            'roundDuration': random.randing(5, 15), # TODO: tune duration?
+            'roundDuration': random.randint(5, 15), # TODO: tune duration?
             'imageName': random.choice(IMAGE_NAMES),
             'currentRound': self.current_round,
             'totalRounds': self.total_rounds,
@@ -121,7 +121,7 @@ class Game:
         
 
     async def notify_players(self, data):
-        for name, player in self.players.items():
+        for _, player in self.players.items():
             await player.send(data)
 
 '''
@@ -158,7 +158,7 @@ async def handler(websocket, path):
             data = json.loads(message)
 
             if "action" not in data:
-                logging.error("no action: {}", data)
+                logging.error("no action: {}".format(data))
                 continue
 
             if data["action"] == "JOIN_GAME":
@@ -168,20 +168,20 @@ async def handler(websocket, path):
             elif data["action"] == "SET_READY":
                 room = data['room']
                 if room not in ROOMS:
-                    logging.error("no game in room: {}", data)
+                    logging.error("no game in room: {}".format(data))
                     continue
                 game = ROOMS[room]
                 await game.ready_player(websocket)
             elif data["action"] == "FINISH_ROUND":
                 room = data['room']
                 if room not in ROOMS:
-                    logging.error("no game in room: {}", data)
+                    logging.error("no game in room: {}".format(data))
                     continue
                 game = ROOMS[room]
                 score = data['score']
                 await game.send_score(websocket, score)
             else:
-                logging.error("unsupported event: {}", data)
+                logging.error("unsupported event: {}".format(data))
     finally:
         pass
 
