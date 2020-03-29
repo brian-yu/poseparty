@@ -118,7 +118,7 @@ function Room() {
       const score = Math.round((correctFrames/totalFrames) * 10000);
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID}));
     }
-  }, [currentScore, gameState, roomID, roundState, sendMessage]);
+  }, [correctFrames, totalFrames, gameState, roomID, roundState, sendMessage]);
 
   /* ============================================ POSENET ============================================ */
 
