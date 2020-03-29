@@ -34,6 +34,8 @@ function Room() {
   const [gameState, setGameState] = useState(GameStateEnum.Waiting);
   const [roundState, setRoundState] = useState(RoundStateEnum.Ended);
   const [currentRound, setCurrentRound] = useState(0);
+  const [totalRounds, setTotalRounds] = useState(0);
+  const [gameProgress, setGameProgress] = useState(0);
   const [correctFrames, setCorrectFrames] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
@@ -70,6 +72,7 @@ function Room() {
           }
           setRoundState(RoundStateEnum.Started);
           setCurrentRound(data.currentRound);
+          setTotalRounds(data.totalRounds);
           setCorrectFrames(0);
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
@@ -123,6 +126,7 @@ function Room() {
       console.log(correctFrames);
       console.log(totalFrames);
       console.log(score);
+      setGameProgress(((currentRound+1)/totalRounds));
       // Should probably include round number here if we have the frame counts as dependencies
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
@@ -268,6 +272,18 @@ function Room() {
   return <h1 style={{color: color}}>{str}{' '}{score}</h1>;
   }
 
+  const StatusBar = () => {
+    if (totalRounds > 0){
+      const progress = (gameProgress*100) + '%';
+      return (
+        <div style={{border: '1px solid #74b9ff'}}>
+          <div style={{backgroundColor: '#74b9ff', height: '24px', width: progress}}></div>
+        </div>
+      );
+    }
+    return null;
+  }
+
   const GameOver = () => {
     const bestPlayer = Object.keys(leaderboard).reduce((a, b) => leaderboard[a] > leaderboard[b] ? a : b);
     return (
@@ -322,7 +338,7 @@ function Room() {
           </div>
         </div>
       </div>
-
+      <StatusBar />
       {remoteParticipants.length > 0 ? (
         <>
           <div className="remote-participants">{remoteParticipants}</div>
