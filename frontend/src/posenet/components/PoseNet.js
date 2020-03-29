@@ -35,25 +35,27 @@ export default function PoseNet({
     facingMode,
     frameRate
   })
+  // const [lastPose, setLastPose] = useState();
 
   useEffect(() => {
     if (!net || !image) return () => {}
     if ([net, image].some(elem => elem instanceof Error)) return () => {}
 
+    let lastPose = null;
     const ctx = canvasRef.current.getContext("2d")
+
     const intervalID = setInterval(async () => {
       try {
+        ctx.drawImage(videoRef.current, 0, 0, width, height)
+        if (!input && lastPose) {
+          drawKeypoints(ctx, lastPose.keypoints)
+        }
         const pose = await net.estimateSinglePose(image, inferenceConfigRef.current)
-        // console.log(pose)
         if (pose.score < minPartConfidence) {
           return;
         }
         onEstimateRef.current(pose)
-        ctx.drawImage(videoRef.current, 0, 0, width, height)
-        if (!input) {
-          // ctx.drawImage(image, 0, 0, width, height)
-          drawKeypoints(ctx, pose.keypoints)
-        }
+        lastPose = pose;
       } catch (err) {
         clearInterval(intervalID)
         setErrorMessage(err.message)

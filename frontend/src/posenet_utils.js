@@ -1,8 +1,5 @@
 import similarity from 'compute-cosine-similarity';
 
-
-
-
 export const poseSimilarity = (pose1, pose2) => {
   const poseVector1 = getPoseVector(pose1);
   const poseVector2 = getPoseVector(pose2);

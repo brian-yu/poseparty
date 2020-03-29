@@ -200,6 +200,8 @@ function Room() {
   /* ========================================= POSENET + SCORING ========================================= */
 
   const handlePose = (pose) => {
+    // FIX BUG.
+    // ACCIDENTALLY SETTING POSE TO BE USER POSE FROM LAST ROUND.
     if (getImagePose) {
 
       console.log('SETTING IMAGE POSE TO', imageName, pose)
@@ -246,7 +248,7 @@ function Room() {
     if (gameState === GameStateEnum.Waiting) {
       return (
         <>
-          <h1>Get in position to <span style={ready ? {color: 'green'} : {}}>ready up!</span></h1>
+          <h1>Get in position to <span style={ready ? {color: '#55efc4'} : {}}>ready up!</span></h1>
           <h2>The game will start when everyone is ready.</h2>
         </>
       );
@@ -276,8 +278,8 @@ function Room() {
     if (totalRounds > 0){
       const progress = (gameProgress*100) + '%';
       return (
-        <div style={{border: '1px solid #74b9ff', borderRadius: '10px', marginTop: '10px', marginBottom: '10px'}}>
-          <div style={{backgroundColor: '#74b9ff', height: '24px', width: progress, borderRadius: '10px'}}></div>
+        <div style={{border: '2px solid #74b9ff', borderRadius: '10px', marginTop: '10px', marginBottom: '10px'}}>
+          <div style={{backgroundColor: '#55efc4', height: '24px', width: progress, borderRadius: '10px'}}></div>
         </div>
       );
     }
@@ -298,7 +300,7 @@ function Room() {
     <div className="room">
       <div className="header">
         <h1 className="title display"><a href="/">PoseParty</a></h1>
-        <p>Send this link to your friends: <a href={window.location.href}>{ window.location.href }</a></p>
+        <h2>Send this link to your friends: <a href={window.location.href} style={{color: '#2ecc71'}}>{ window.location.href }</a></h2>
       </div>
 
       <div className="main-container">
@@ -318,7 +320,7 @@ function Room() {
                 <PoseNet
                   className="posenet"
                   input={getImagePose ? imageRef.current : false}
-                  frameRate={10}
+                  frameRate={15}
                   modelConfig={{
                     architecture: 'ResNet50',
                     quantBytes: 4,
