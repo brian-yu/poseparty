@@ -194,22 +194,26 @@ function Room() {
           src={process.env.PUBLIC_URL + '/img/tadasana.png'}/>
 
         <div className="local-participant">
-          {room ? (
-            <PoseNet
-              className="posenet"
-              modelConfig={{
-                architecture: 'ResNet50',
-                quantBytes: 4,
-                outputStride: 32,
-                inputResolution: 193,
-              }}
-              inferenceConfig={{
-                decodingMethod: 'single-person',
-                maxDetections: 1,
-              }}
-              onEstimate={(pose) => console.log(pose)}
-            />
-          ) : null}
+          <h3>{room && room.localParticipant.identity}</h3>
+          <div className='video-wrapper'>
+            {room ? (
+              <PoseNet
+                className="posenet"
+                modelConfig={{
+                  architecture: 'ResNet50',
+                  quantBytes: 4,
+                  outputStride: 32,
+                  inputResolution: 193,
+                }}
+                inferenceConfig={{
+                  decodingMethod: 'single-person',
+                  maxDetections: 1,
+                }}
+                onEstimate={(pose) => console.log(pose)}
+              />
+            ) : null}
+            <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
+          </div>
         </div>
       </div>
 

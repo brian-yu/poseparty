@@ -17,6 +17,10 @@
     align-items: flex-end;
 }
 
+.local-participant > .video-wrapper > video {
+    border: none;
+}
+
 .reference-img, .video-wrapper > video, .video-wrapper > canvas, .posenet {
     border-radius: 15px;
     border: 10px;
