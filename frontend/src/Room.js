@@ -257,7 +257,7 @@ function Room() {
                   }}
                   onEstimate={(pose) => handlePose(pose)}
                 />
-                <p>{similarity}</p>
+                <h1>{similarity ? Math.round(similarity*100) : null}</h1>
               </>
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
