@@ -73,6 +73,7 @@ function Room() {
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
           setImageName(data.imageName);
+          setGetImagePose(true); // ask posenet to recalculate image pose.
           // TODO: call function to display new scores
           // Update images/pose
           // Start new round animation
@@ -258,7 +259,13 @@ function Room() {
                   }}
                   onEstimate={(pose) => handlePose(pose)}
                 />
-                <h1>{similarity ? Math.round(similarity*100) : null}</h1>
+                <h1>{similarity ? Math.round((1-similarity)*100) : null}</h1>
+                {ready ? null :
+                  <>
+                    <h1>Get in position to ready up!</h1>
+                    <h2>The game will start when everyone is ready.</h2>
+                  </>
+                }
               </>
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
