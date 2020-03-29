@@ -10,5 +10,5 @@ export const API_HOST = PRODUCTION ? PROD_API_HOST : DEV_API_HOST;
 
 
 const DEV_SOCKET_HOST = 'ws://127.0.0.1:6789'; // socket server
-const PROD_SOCKET_HOST = 'ws://35.245.60.23:6789';
+const PROD_SOCKET_HOST = 'wss://socket.poseparty.online:6789';
 export const SOCKET_HOST = PRODUCTION ? PROD_SOCKET_HOST : DEV_SOCKET_HOST;
