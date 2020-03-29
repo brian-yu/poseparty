@@ -1,16 +1,6 @@
 import similarity from 'compute-cosine-similarity';
 
-let LAST_PRINT = Date.now();
-
-
 export const poseSimilarity = (pose1, pose2) => {
-
-  const now = Date.now();
-  if (now - LAST_PRINT > 2000) {
-    console.log(pose1, pose2);
-    LAST_PRINT = now;
-  }
-
   const poseVector1 = getPoseVector(pose1);
   const poseVector2 = getPoseVector(pose2);
   return cosineDistanceMatching(poseVector1, poseVector2);
