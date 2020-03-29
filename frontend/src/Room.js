@@ -6,6 +6,7 @@ import PoseNet from './posenet/components/PoseNet';
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
 import { poseSimilarity } from './posenet_utils';
+import { POSE_MAP } from './pose_vectors';
 
 import useWebSocket from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
@@ -36,7 +37,7 @@ function Room() {
   const [correctFrames, setCorrectFrames] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
-  const [imageName, setImageName] = useState(null);
+  const [imageName, setImageName] = useState('tadasana.png');
   const [imagePoseVector, setImagePoseVector] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
@@ -185,10 +186,12 @@ function Room() {
 
   /* ============================================ POSENET ============================================ */
 
-  const handlePose = (results) => {
+  const handlePose = (pose) => {
     if (!imagePoseVector) {
       return;
     }
+
+    
   }
 
   /* ============================================ RENDER ============================================ */
@@ -218,7 +221,7 @@ function Room() {
                 decodingMethod: 'single-person',
                 maxDetections: 1,
               }}
-              onEstimate={(results) => handlePose(results)}
+              onEstimate={(pose) => handlePose(pose)}
             />
           ) : null}
         </div>
