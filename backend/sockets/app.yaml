@@ -1,2 +1,2 @@
 runtime: python37
-entrypoint: gunicorn -b :$PORT server:app
+entrypoint: gunicorn socket_server:app -b :8080 --worker-class aiohttp.GunicornWebWorker
