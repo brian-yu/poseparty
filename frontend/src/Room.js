@@ -7,18 +7,84 @@ import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
 import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
 
+import useWebSocket from 'react-use-websocket';
+import { SOCKET_HOST } from './constants';
+
 import './Room.css';
 
 const MIN_POSE_CONFIDENCE = 0.1;
 
 function Room() {
 
+  /* ============================================ INIT STATE ============================================ */
+
   const { roomID } = useParams();
   const [token, setToken] = useState(null);
   const [username, setUsername] = useState(null);
+  const [ready, setReady] = useState(false);
   
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
+  const [sendMessage, lastMessage, readyState, getWebSocket] = useWebSocket(SOCKET_HOST);
+  
+  /* ============================================ WEBSOCKETS ============================================ */
+
+  // Log message output and change app state
+  useEffect(() => {
+    if (lastMessage !== null) {
+      const data = JSON.parse(lastMessage.data);
+      console.log('got message!');
+      console.log(data);
+      switch (data.action) {
+        case 'START_ROUND':
+          console.log('STARTING ROUND!', data);
+          // if (STATE.gameState === GameStateEnum.Finished) {
+          //   console.error('invalid game state transition');
+          //   return;
+          // } if (STATE.gameState === GameStateEnum.Waiting) {
+          //   STATE.gameState = GameStateEnum.Playing;
+          // }
+          // STATE.currentRound = data.currentRound;
+          // STATE.currentScore = 0;
+          // STATE.allScores = data.prevScores;
+          // STATE.totalScores = STATE.allScores.map((arr) => arr.reduce((a, b) => a + b, 0)); // SUM
+          // TODO: call function to display new scores
+          // Update images/pose
+          // Start new round animation
+          // setTimeout(this.finishRound(), data.roundDuration * 100);
+          break;
+        case 'END_GAME':
+          console.log('ENDING GAME!', data);
+          // if (STATE.gameState !== GameStateEnum.Playing) {
+          //   console.error('invalid game state transition');
+          //   return;
+          // }
+          // STATE.gameState = GameStateEnum.Finished;
+          // STATE.allScores = data.prevScores;
+          // STATE.totalScores = STATE.allScores.map((arr) => arr.reduce((a, b) => a + b, 0)); // SUM
+          break;
+        default:
+          console.log('Unrecognized game action!', data);
+      }
+    }
+  }, [lastMessage]);
+
+  // Join the game
+  useEffect(() => {
+    if (username !== null) {
+      sendMessage(JSON.stringify({ action: 'JOIN_GAME', name: username, room: roomID}));
+      setReady(true); // TODO: change this elsewhere
+    }
+  }, [username]);
+
+  // Set ready message
+  useEffect(() => {
+    if (ready === true) {
+      sendMessage(JSON.stringify({ action: 'SET_READY', room: roomID}));
+    }
+  }, [ready]);
+
+  /* ============================================ TWILIO ============================================ */
 
   const [videoRef, setVideoRef] = useState(null);
   const [canvasRef, setCanvasRef] = useState(null);
