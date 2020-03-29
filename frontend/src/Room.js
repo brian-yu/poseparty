@@ -5,7 +5,7 @@ import PoseNet from './posenet/components/PoseNet';
 
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
-import { drawKeypoints, drawSkeleton, poseSimilarity } from './posenet_utils';
+import { poseSimilarity } from './posenet_utils';
 
 import useWebSocket from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
@@ -38,11 +38,6 @@ function Room() {
   const [leaderboard, setLeaderboard] = useState({});
   const [imageName, setImageName] = useState(null);
   const [imagePoseVector, setImagePoseVector] = useState(null);
-
-  // PoseNet State
-  const [videoRef, setVideoRef] = useState(null);
-  const [canvasRef, setCanvasRef] = useState(null);
-  const [poseNet, setPoseNet] = useState(null);
   
   /* ============================================ WEBSOCKETS ============================================ */
 
