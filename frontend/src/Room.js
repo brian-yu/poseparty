@@ -269,7 +269,7 @@ function Room() {
 
       {remoteParticipants.length > 0 ? (
         <>
-          <h3>The Party</h3>
+          <h2 className="party-title">The Party</h2>
           <div className="remote-participants">{remoteParticipants}</div>
         </>
       ) : null}

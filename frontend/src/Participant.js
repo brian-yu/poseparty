@@ -74,10 +74,10 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer, score }
       <div className='video-wrapper'>
         { isPlayer ?
           <>
-            <canvas ref={canvasRef} width="640" height="480" style={{transform: 'scaleX(-1)'}}></canvas>
-            <video ref={videoRef} width="640" height="480" autoPlay={true} className="hidden" />
+            <canvas ref={canvasRef} width="560" height="420" style={{transform: 'scaleX(-1)'}}></canvas>
+            <video ref={videoRef} width="560" height="420" autoPlay={true} className="hidden" />
           </>
-          : <video ref={videoRef} autoPlay={true} />
+          : <video ref={videoRef} width="400" height="300" autoPlay={true} />
         }
         <audio ref={audioRef} autoPlay={true} muted={true} />
         <div className='score-overlay'>{score}</div>
