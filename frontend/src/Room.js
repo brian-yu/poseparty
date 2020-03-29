@@ -72,7 +72,7 @@ function Room() {
           // Update images/pose
           // Start new round animation
           const finishRound = () => {
-            setCurrentScore(10); // Mock score update
+            setCurrentScore(3496); // Mock score update
             setRoundState(RoundStateEnum.Ended);
           }
           setTimeout(function() {finishRound()}, data.roundDuration * 1000);
@@ -232,7 +232,7 @@ function Room() {
   }, [token]);
 
   const remoteParticipants = participants.map(participant => (
-    <Participant key={participant.sid} participant={participant} />
+    <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
   ));
 
   return (
@@ -254,6 +254,7 @@ function Room() {
               setVideoRef={setVideoRef}
               setCanvasRef={setCanvasRef}
               isPlayer={true}
+              score={leaderboard[room.localParticipant.identity]}
             />
           ) : null}
         </div>

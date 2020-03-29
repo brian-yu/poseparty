@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer }) => {
+const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer, score }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
 
@@ -71,14 +71,17 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer }) => {
   return (
     <div className="participant">
       <h3>{participant.identity}</h3>
-      { isPlayer ?
-        <>
-          <canvas ref={canvasRef} width="640" height="480" style={{transform: 'scaleX(-1)'}}></canvas>
-          <video ref={videoRef} width="640" height="480" autoPlay={true} className="hidden" />
-        </>
-        : <video ref={videoRef} autoPlay={true} />
-      }
-      <audio ref={audioRef} autoPlay={true} muted={true} />
+      <div className='video-wrapper'>
+        { isPlayer ?
+          <>
+            <canvas ref={canvasRef} width="640" height="480" style={{transform: 'scaleX(-1)'}}></canvas>
+            <video ref={videoRef} width="640" height="480" autoPlay={true} className="hidden" />
+          </>
+          : <video ref={videoRef} autoPlay={true} />
+        }
+        <audio ref={audioRef} autoPlay={true} muted={true} />
+        <div className='score-overlay'>{score}</div>
+      </div>
     </div>
   );
 };
