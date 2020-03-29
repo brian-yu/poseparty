@@ -48,9 +48,11 @@ export default function PoseNet({
         if (pose.score < minPartConfidence) {
           return;
         }
-        ctx.drawImage(image, 0, 0, width, height)
         onEstimateRef.current(pose)
-        drawKeypoints(ctx, pose.keypoints)
+        if (!input) {
+          ctx.drawImage(image, 0, 0, width, height)
+          drawKeypoints(ctx, pose.keypoints)
+        }
       } catch (err) {
         clearInterval(intervalID)
         setErrorMessage(err.message)
