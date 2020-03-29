@@ -48,14 +48,13 @@ function Room() {
   // Log message output and change app state
   useEffect(() => {
     if (lastMessage !== null) {
-      const data = JSON.parse(lastMessage.data);
-      console.log('got message!');
-      console.log(data);
+      const data = JSON.parse(lastMessage.data);      
       const newLeaderboard = Object.entries(data.prevScores).reduce((acc, entry) => {
         const [key, value] = entry;
         acc[key] = value.reduce((a, b) => a + b, 0);
         return acc;
       }, {})
+
       switch (data.action) {
         case 'START_ROUND':
           console.log('STARTING ROUND!', data);
@@ -73,7 +72,7 @@ function Room() {
           // Update images/pose
           // Start new round animation
           const finishRound = () => {
-            setCurrentScore(10); // MOCK
+            setCurrentScore(10); // Mock score update
             setRoundState(RoundStateEnum.Ended);
           }
           setTimeout(function() {finishRound()}, data.roundDuration * 1000);
