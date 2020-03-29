@@ -12,7 +12,8 @@ import { SOCKET_HOST } from './constants';
 
 import './Room.css';
 
-const MIN_POSE_CONFIDENCE = 0.1;
+const SIMILARITY_THRESHOLD_GOOD = 0.15;
+const SIMILARITY_THRESHOLD_OKAY = 0.5;
 const GameStateEnum = Object.freeze({ Waiting: 1, Playing: 2, Finished: 3 });
 const RoundStateEnum = Object.freeze({ Started: 1, Ended: 2});
 
@@ -78,9 +79,6 @@ function Room() {
           // Update images/pose
           // Start new round animation
           const finishRound = () => {
-            // TODO: Update frame counts elsewhere
-            setCorrectFrames(3496);
-            setTotalFrames(10000);
             setRoundState(RoundStateEnum.Ended);
           }
           setTimeout(function() {finishRound()}, data.roundDuration * 1000);
@@ -121,6 +119,10 @@ function Room() {
     if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended) {
       // TODO: check for NaN or Infinity
       const score = Math.round((correctFrames/totalFrames) * 10000);
+      console.log('scoring');
+      console.log(correctFrames);
+      console.log(totalFrames);
+      console.log(score);
       // Should probably include round number here if we have the frame counts as dependencies
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
@@ -191,7 +193,7 @@ function Room() {
     <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
   ));
 
-  /* ============================================ POSENET ============================================ */
+  /* ========================================= POSENET + SCORING ========================================= */
 
   const handlePose = (pose) => {
     if (getImagePose) {
@@ -220,10 +222,19 @@ function Room() {
     // on initial pose, set ready if true.
     // exploits the fact that ready is only changed once.
     // TODO: tune threshold
-    if (!ready && s < 0.1) {
+    if (!ready && s < SIMILARITY_THRESHOLD_GOOD) {
       setReady(true);
     }
   }
+
+  // UpdateScore
+  useEffect(() => {
+    if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Started) {
+      const frameIsCorrect = similarity < SIMILARITY_THRESHOLD_GOOD;
+      setTotalFrames(totalFrames+1);
+      setCorrectFrames(correctFrames + frameIsCorrect);
+    }
+  }, [similarity, gameState, roundState]);
 
   /* ============================================ RENDER ============================================ */
 
@@ -241,20 +252,20 @@ function Room() {
       return null;
     }
 
-    const score = (1-similarity)*100;
+    let score = Math.round((1-similarity)*100);
     let str = null;
     let color = null;
-    if (score >= 80) {
+    if (similarity < SIMILARITY_THRESHOLD_GOOD) {
       str = 'Excellent!'
       color = 'green';
-    } else if (score >= 45) {
+    } else if (similarity < SIMILARITY_THRESHOLD_OKAY) {
       str = 'Okay';
       color = 'orange';
     } else {
       str = 'Poor';
       color = 'red';
     }
-    return <h1 style={{color: color}}>{str}</h1>;
+  return <h1 style={{color: color}}>{str}{' '}{score}</h1>;
   }
 
   return (
