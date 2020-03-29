@@ -1485,6 +1485,10 @@
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@tensorflow-models/posenet/-/posenet-2.1.3.tgz#09633e6e6e41d6c00d2ee7633632fb9322651463"
 
+"@tensorflow-models/posenet@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/posenet/-/posenet-2.2.1.tgz#2f0a68d909842f59eec195f23c6f3d4cebc53fa8"
+
 "@tensorflow-models/speech-commands@0.3.9":
   version "0.3.9"
   resolved "https://registry.yarnpkg.com/@tensorflow-models/speech-commands/-/speech-commands-0.3.9.tgz#388cde2cd24bec29cc8f1e2abdfc11eda2082d75"
@@ -1521,7 +1525,7 @@
   optionalDependencies:
     rollup-plugin-visualizer "~1.1.1"
 
-"@tensorflow/tfjs-core@1.7.1", "@tensorflow/tfjs-core@^1.2.9":
+"@tensorflow/tfjs-core@1.7.1", "@tensorflow/tfjs-core@^1.2.9", "@tensorflow/tfjs-core@^1.4.0":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-1.7.1.tgz#145c3c70de0e0aef11ff7e9cadf7b3fa81ce13e2"
   dependencies:
@@ -1566,7 +1570,7 @@
     vega-embed "~5.1.2"
     vega-lite "~4.0.0-beta.1"
 
-"@tensorflow/tfjs@^1.0.2":
+"@tensorflow/tfjs@^1.0.2", "@tensorflow/tfjs@^1.3.2":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs/-/tfjs-1.7.1.tgz#468e24a8d1a73c369876ac5e78d755079a5fc493"
   dependencies:
@@ -2298,6 +2302,10 @@ autoprefixer@^9.6.1:
     num2fraction "^1.2.2"
     postcss "^7.0.26"
     postcss-value-parser "^4.0.2"
+
+await-to-js@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/await-to-js/-/await-to-js-2.1.1.tgz#c2093cd5a386f2bb945d79b292817bbc3f41b31b"
 
 aws-sign2@~0.7.0:
   version "0.7.0"
@@ -8243,6 +8251,16 @@ react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0:
 react-is@^16.8.1, react-is@^16.8.4:
   version "16.12.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
+
+react-posenet@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-posenet/-/react-posenet-0.1.2.tgz#11d71916bd16bfbf1d2b0707dddfbf61c6dd28e7"
+  dependencies:
+    "@tensorflow-models/posenet" "^2.2.1"
+    "@tensorflow/tfjs" "^1.3.2"
+    "@tensorflow/tfjs-core" "^1.4.0"
+    await-to-js "^2.1.1"
+    regenerator-runtime "^0.13.3"
 
 react-router-dom@^5.1.2:
   version "5.1.2"
