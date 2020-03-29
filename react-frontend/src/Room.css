@@ -1,0 +1,13 @@
+
+.remote-participants {
+    display: flex;
+    justify-content: space-around;
+}
+
+.remote-participants > .participant {
+    width: 300px;
+}
+
+.remote-participants > .participant > video {
+    width: 300px;
+}

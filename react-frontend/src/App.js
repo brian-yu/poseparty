@@ -17,6 +17,8 @@ function App() {
     return Math.floor(Math.random() * 0xFFFFFF).toString(16);
   }
 
+  const roomID = generateRoomID();
+
   return (
     <div className="App">
       <Router>
@@ -30,7 +32,7 @@ function App() {
             </Route>
             <Route path="/">
               <h2>A social exercise game you can play while social distancing.</h2>
-              <Link to={`/room/${generateRoomID()}`>Create a Room</Link>
+              <Link to={`/room/${roomID}`}>Create a Room</Link>
             </Route>
           </Switch>
 
