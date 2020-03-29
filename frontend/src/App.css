@@ -43,6 +43,30 @@ p {
 }
 .home > * {
   margin-bottom: 50px;
+  max-width: 55%;
+}
+
+.join {
+  display: flex;
+  align-items: center;
+}
+
+.join > * {
+  margin: 0 30px;
+}
+
+input {
+  height: 50px;
+  width: 200px;
+  border-radius: 10px;
+  border-style: solid;
+  font-size: 2em;
+  text-align: center;
+  color: #636e72;
+  border-color: #b2bec3;
+}
+input:focus {
+  outline-width: 0;
 }
 
 .button {
@@ -58,4 +82,8 @@ p {
 }
 .button:hover {
   background-color: #6c5ce7;
+}
+
+.secondary {
+  background-color: #74b9ff;
 }
