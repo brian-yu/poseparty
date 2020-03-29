@@ -298,7 +298,7 @@ function Room() {
     <div className="room">
       <div className="header">
         <h1 className="title display"><a href="/">PoseParty</a></h1>
-        <p>Send this link to your friends: <a href={window.location.href}>{ window.location.href }</a></p>
+        <h2>Send this link to your friends: <a href={window.location.href} style={{color: '#2ecc71'}}>{ window.location.href }</a></h2>
       </div>
 
       <div className="main-container">
