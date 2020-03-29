@@ -207,13 +207,19 @@ async def handler(websocket, path):
         USERS.pop(websocket)
         pass
 
-# ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
 
 parser = argparse.ArgumentParser(description='host')
 parser.add_argument('--host', default='0.0.0.0', type=str)
+parser.add_argument('--env', default='dev', type=str)
 args = parser.parse_args()
 
-start_server = websockets.serve(handler, args.host, 6789)
+if args.env == "prod":
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.load_verify_locations('/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
+    start_server = websockets.serve(handler, args.host, 6789, ssl=ssl_context)
+else:
+    start_server = websockets.serve(handler, args.host, 6789)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
