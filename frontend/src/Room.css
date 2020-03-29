@@ -13,7 +13,7 @@
 
 .main-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: flex-end;
 }
 
@@ -25,13 +25,19 @@
 }
 
 .reference-img {
-    max-width: 640px;
-    max-height: 480px;
+    max-width: 560px;
+    max-height: 420px;
+    margin-right: 150px;
 }
 
 .local-participant > video {
-    width: 640px;
-    height: 480px;
+    width: 560px;
+    height: 420px;
+}
+
+.party-title {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .remote-participants {
@@ -39,12 +45,9 @@
     justify-content: space-around;
 }
 
-.remote-participants > .participant {
-    width: 300px;
-}
-
-.remote-participants > .participant > video {
-    width: 300px;
+.remote-participants > .participant, .remote-participants > video {
+    width: 400px;
+    height: 300px;
 }
 
 .video-wrapper {
