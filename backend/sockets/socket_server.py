@@ -85,10 +85,13 @@ class Game:
 
         logging.info('starting round {} in room {}'.format(self.current_round, self.room))
 
+        image = random.choice(IMAGE_NAMES)
+        duration = random.randint(5, 15), # TODO: tune duration?
+
         await self.notify_players({
             'action': 'START_ROUND',
-            'roundDuration': random.randint(5, 15), # TODO: tune duration?
-            'imageName': random.choice(IMAGE_NAMES),
+            'roundDuration': duration,
+            'imageName': image,
             'currentRound': self.current_round,
             'totalRounds': self.total_rounds,
             'prevScores': self.get_scores(),
@@ -185,9 +188,9 @@ async def handler(websocket, path):
     finally:
         pass
 
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+# ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-start_server = websockets.serve(handler, "0.0.0.0", 6789, ssl=ssl_context)
+start_server = websockets.serve(handler, "0.0.0.0", 6789)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

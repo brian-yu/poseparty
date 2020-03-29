@@ -197,6 +197,7 @@ function Room() {
       console.log(pose)
       setGetImagePose(false);
       setImagePose(pose);
+
       return;
     }
 
@@ -205,7 +206,21 @@ function Room() {
     }
 
     // handle scoring of video pose
-    setSimilarity(poseSimilarity(imagePose, pose));
+    const s = poseSimilarity(imagePose, pose);
+    // if similarity is 0, we have a bug since the
+    // posenet is returning the pose for the image still.
+    if (s === 0) {
+      return;
+    }
+
+    setSimilarity(s);
+
+    // on initial pose, set ready if true.
+    // exploits the fact that ready is only changed once.
+    // TODO: tune threshold
+    if (!ready && s < 0.1) {
+      setReady(true);
+    }
   }
 
   /* ============================================ RENDER ============================================ */
