@@ -56,7 +56,7 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer, score }
         videoTrack.detach();
       };
     }
-  }, [videoTracks]);
+  }, [isPlayer, setCanvasRef, setVideoRef, videoTracks]);
 
   useEffect(() => {
     const audioTrack = audioTracks[0];
