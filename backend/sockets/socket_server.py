@@ -3,6 +3,7 @@ import json
 import logging
 import websockets
 import random
+import ssl
 
 logging.basicConfig()
 
@@ -180,8 +181,9 @@ async def handler(websocket, path):
     finally:
         pass
 
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-start_server = websockets.serve(handler, "0.0.0.0", 6789)
+start_server = websockets.serve(handler, "0.0.0.0", 6789, ssl=ssl_context)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
