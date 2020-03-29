@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Participant = ({ participant }) => {
+const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
 
+  const canvasRef = useRef();
   const videoRef = useRef();
   const audioRef = useRef();
 
@@ -45,6 +46,12 @@ const Participant = ({ participant }) => {
     const videoTrack = videoTracks[0];
     if (videoTrack) {
       videoTrack.attach(videoRef.current);
+      
+      if (setVideoRef !== null && setCanvasRef !== null) {
+        setVideoRef(videoRef);
+        setCanvasRef(canvasRef);
+      }
+      
       return () => {
         videoTrack.detach();
       };
@@ -64,7 +71,13 @@ const Participant = ({ participant }) => {
   return (
     <div className="participant">
       <h3>{participant.identity}</h3>
-      <video ref={videoRef} autoPlay={true} />
+      { isPlayer ?
+        <>
+          <canvas ref={canvasRef} width="640" height="480"></canvas>
+          <video ref={videoRef} width="640" height="480" autoPlay={true} className="hidden" />
+        </>
+        : <video ref={videoRef} autoPlay={true} />
+      }
       <audio ref={audioRef} autoPlay={true} muted={true} />
     </div>
   );
