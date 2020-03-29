@@ -52,6 +52,7 @@ export default function PoseNet({
         ctx.drawImage(image, 0, 0, width, height)
         onEstimateRef.current(confidentPoses)
         confidentPoses.forEach(({ keypoints }) => drawKeypoints(ctx, keypoints))
+        // confidentPoses.forEach(({ keypoints }) => drawSkeleton(ctx, keypoints))
       } catch (err) {
         clearInterval(intervalID)
         setErrorMessage(err.message)
