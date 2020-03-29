@@ -276,8 +276,8 @@ function Room() {
     if (totalRounds > 0){
       const progress = (gameProgress*100) + '%';
       return (
-        <div style={{border: '1px solid #74b9ff', borderRadius: '10px', marginTop: '10px', marginBottom: '10px'}}>
-          <div style={{backgroundColor: '#74b9ff', height: '24px', width: progress, borderRadius: '10px'}}></div>
+        <div style={{border: '2px solid #74b9ff', borderRadius: '10px', marginTop: '10px', marginBottom: '10px'}}>
+          <div style={{backgroundColor: '#55efc4', height: '24px', width: progress, borderRadius: '10px'}}></div>
         </div>
       );
     }
@@ -318,7 +318,7 @@ function Room() {
                 <PoseNet
                   className="posenet"
                   input={getImagePose ? imageRef.current : false}
-                  frameRate={20}
+                  frameRate={15}
                   modelConfig={{
                     architecture: 'ResNet50',
                     quantBytes: 4,
