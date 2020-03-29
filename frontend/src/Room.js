@@ -40,7 +40,7 @@ function Room() {
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
   const imageRef = useRef();
-  const [imageName, setImageName] = useState('tadasana.png');
+  const [imageName, setImageName] = useState('vrksasana.png');
   // set getImagePose to true whenever you want to get the pose of the
   // reference image. set it to false immediately after you get the
   // result pose vector so that the posenet can run on the video.
