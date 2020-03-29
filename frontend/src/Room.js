@@ -163,7 +163,7 @@ function Room() {
 
     const drawCameraIntoCanvas = () => {
       // Draw the video element into the canvas
-      ctx.drawImage(video, 0, 0, 640, 480);
+      ctx.drawImage(video, 0, 0, 560, 420);
       // We can call both functions to draw all keypoints and the skeletons
       if (videoPose !== null) {
         if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
