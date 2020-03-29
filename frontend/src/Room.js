@@ -6,7 +6,6 @@ import PoseNet from './posenet/components/PoseNet';
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
 import { poseSimilarity } from './posenet_utils';
-import { POSE_MAP } from './pose_vectors';
 
 import useWebSocket from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
@@ -43,7 +42,9 @@ function Room() {
   // reference image. set it to false immediately after you get the
   // result pose vector so that the posenet can run on the video.
   const [getImagePose, setGetImagePose] = useState(true);
-  const [imagePoseVector, setImagePoseVector] = useState(null);
+  const [imagePose, setImagePose] = useState(null);
+
+  const [similarity, setSimilarity] = useState();
   
   /* ============================================ WEBSOCKETS ============================================ */
 
@@ -195,12 +196,16 @@ function Room() {
     if (getImagePose) {
       console.log(pose)
       setGetImagePose(false);
-    }
-    if (!imagePoseVector) {
+      setImagePose(pose);
       return;
     }
 
-    
+    if (!imagePose || !pose) {
+      return;
+    }
+
+    // handle scoring of video pose
+    setSimilarity(poseSimilarity(imagePose, pose));
   }
 
   /* ============================================ RENDER ============================================ */
@@ -221,20 +226,24 @@ function Room() {
           <h3>{room && room.localParticipant.identity}</h3>
           <div className='video-wrapper'>
             {room ? (
-              <PoseNet
-                className="posenet"
-                modelConfig={{
-                  architecture: 'ResNet50',
-                  quantBytes: 4,
-                  outputStride: 32,
-                  inputResolution: 193,
-                }}
-                inferenceConfig={{
-                  decodingMethod: 'single-person',
-                  maxDetections: 1,
-                }}
-                onEstimate={(pose) => handlePose(pose)}
-              />
+              <>
+                <PoseNet
+                  className="posenet"
+                  input={getImagePose ? imageRef.current : false}
+                  modelConfig={{
+                    architecture: 'ResNet50',
+                    quantBytes: 4,
+                    outputStride: 32,
+                    inputResolution: 193,
+                  }}
+                  inferenceConfig={{
+                    decodingMethod: 'single-person',
+                    maxDetections: 1,
+                  }}
+                  onEstimate={(pose) => handlePose(pose)}
+                />
+                <p>{similarity}</p>
+              </>
             ) : null}
             <div className='score-overlay'>{room && leaderboard[room.localParticipant.identity]}</div>
           </div>
