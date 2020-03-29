@@ -90,7 +90,7 @@ function Room() {
           console.log('Unrecognized game action!', data);
       }
     }
-  }, [lastMessage]);
+  }, [gameState, lastMessage]);
 
   // Join the game
   useEffect(() => {
@@ -98,21 +98,21 @@ function Room() {
       sendMessage(JSON.stringify({ action: 'JOIN_GAME', name: username, room: roomID}));
       setReady(true); // TODO: change this elsewhere
     }
-  }, [username]);
+  }, [roomID, sendMessage, username]);
 
   // Set ready message
   useEffect(() => {
     if (ready === true) {
       sendMessage(JSON.stringify({ action: 'SET_READY', room: roomID}));
     }
-  }, [ready]);
+  }, [ready, roomID, sendMessage]);
 
   // Submit Score
   useEffect(() => {
     if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended) {
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score: currentScore, room: roomID}));
     }
-  }, [gameState, roundState]);
+  }, [currentScore, gameState, roomID, roundState, sendMessage]);
 
   /* ============================================ POSENET ============================================ */
 
@@ -136,7 +136,7 @@ function Room() {
     });
     
     setPoseNet(model);
-  });
+  }, [poseNet]);
 
   // setup canvas
   useEffect(() => {
@@ -179,7 +179,7 @@ function Room() {
       setToken(token);
     }
     getToken();
-  }, []);
+  }, [roomID]);
 
   // retrieve connected participants and create listeners for participant
   // connections.
@@ -229,7 +229,7 @@ function Room() {
         }
       });
     };
-  }, [token]);
+  }, [roomID, token]);
 
   const remoteParticipants = participants.map(participant => (
     <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
