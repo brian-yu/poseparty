@@ -29,10 +29,14 @@
     border-style: solid;
 }
 
+.game-over, .reference-img {
+    min-width: 300px;
+    margin-right: 150px;
+}
+
 .reference-img {
     max-width: 560px;
     max-height: 420px;
-    margin-right: 150px;
     width: auto;
     height: auto;
 }

@@ -234,9 +234,13 @@ function Room() {
       </div>
 
       <div className="main-container">
-        <img className="reference-img" 
-          ref={imageRef}
-          src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
+
+        { gameState === GameStateEnum.Finished ? 
+          <h1 className="game-over">Game Over!</h1> :
+          <img className="reference-img" 
+            ref={imageRef}
+            src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
+        }
 
         <div className="local-participant">
           <h3>{room && room.localParticipant.identity}</h3>
