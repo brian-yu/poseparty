@@ -39,6 +39,7 @@ class GameClient {
     };
 
     this.ws.onopen = () => {
+      // TODO: wait until twilio is ready
       this.join();
     };
 

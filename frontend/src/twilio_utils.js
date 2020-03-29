@@ -23,6 +23,15 @@ export const setupTwilio = (ROOM_ID, STATE) => {
             const participantDiv = document.createElement('div');
             participantDiv.id = participant.identity;
 
+            document.getElementById('remote-media-div').appendChild(participantDiv);
+
+            const mediaDiv = document.createElement('div');
+            mediaDiv.class = 'media';
+            participantDiv.appendChild(mediaDiv);
+
+            const nameElem = document.createElement('p');
+            nameElem.textContent = participant.identity;
+            participantDiv.appendChild(nameElem);
 
             participant.tracks.forEach(publication => {
                 if (publication.isSubscribed) {
@@ -36,7 +45,7 @@ export const setupTwilio = (ROOM_ID, STATE) => {
             participant.on('trackSubscribed', track => {
                 const elem = track.attach();
                 elem.setAttribute('participantidentity', participant.identity);
-                participantDiv.appendChild(elem);
+                mediaDiv.appendChild(elem);
             });
         }
     
