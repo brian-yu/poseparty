@@ -1,5 +1,23 @@
 import similarity from 'compute-cosine-similarity';
 
+
+
+
+export const poseSimilarity = (pose1, pose2) => {
+  const poseVector1 = getPoseVector(pose1);
+  const poseVector2 = getPoseVector(pose2);
+  return cosineDistanceMatching(poseVector1, poseVector2);
+};
+
+function getPoseVector(pose) {
+  const vector = [];
+  for (const keypoint of pose.keypoints) {
+    vector.push(keypoint.position.x);
+    vector.push(keypoint.position.y);
+  }
+  return vector;
+}
+
 // Cosine similarity as a distance function. The lower the number, the closer // the match
 // poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each
 // with an x and y. 17 * 2 = 32)
