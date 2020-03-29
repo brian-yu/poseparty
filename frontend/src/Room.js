@@ -268,6 +268,16 @@ function Room() {
   return <h1 style={{color: color}}>{str}{' '}{score}</h1>;
   }
 
+  const GameOver = () => {
+    const bestPlayer = Object.keys(leaderboard).reduce((a, b) => leaderboard[a] > leaderboard[b] ? a : b);
+    return (
+      <div className="game-over">
+        <h1>Game Over!</h1>
+        <h1>{bestPlayer} won with {leaderboard[bestPlayer]} points!</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="room">
       <div className="header">
@@ -278,7 +288,7 @@ function Room() {
       <div className="main-container">
 
         { gameState === GameStateEnum.Finished ? 
-          <h1 className="game-over">Game Over!</h1> :
+          <GameOver /> :
           <img className="reference-img" 
             ref={imageRef}
             src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
