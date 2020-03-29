@@ -1,2 +1,0 @@
-runtime: python37
-entrypoint: gunicorn socket_server:app -b :6789 --worker-class aiohttp.GunicornWebWorker
