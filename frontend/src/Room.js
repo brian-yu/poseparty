@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import Video from 'twilio-video';
-import ml5 from 'ml5';
+// import ml5 from 'ml5';
+import PoseNet from 'react-posenet';
 
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
@@ -100,13 +101,14 @@ function Room() {
   useEffect(() => {
     if (username !== null) {
       sendMessage(JSON.stringify({ action: 'JOIN_GAME', name: username, room: roomID}));
-      setReady(true); // TODO: change this elsewhere
+      // setReady(true); // TODO: change this elsewhere
     }
   }, [roomID, sendMessage, username]);
 
   // Set ready message
   useEffect(() => {
     if (ready === true) {
+      console.log('setting ready')
       sendMessage(JSON.stringify({ action: 'SET_READY', room: roomID}));
     }
   }, [ready, roomID, sendMessage]);
@@ -123,59 +125,59 @@ function Room() {
 
   /* ============================================ POSENET ============================================ */
 
-  // load poseNet.
-  useEffect(() => {
-    if (poseNet) {
-      return;
-    }
+  // // load poseNet.
+  // useEffect(() => {
+  //   if (poseNet) {
+  //     return;
+  //   }
 
-    const modelReady = () => {
-      console.log('model ready');
-    }
+  //   const modelReady = () => {
+  //     console.log('model ready');
+  //   }
 
-    const model = ml5.poseNet(modelReady, {
-      architecture: 'ResNet50',
-      detectionType: 'single',
-      quantBytes: 4,
-      outputStride: 32,
-      inputResolution: 193, // default 257
-      maxPoseDetections: 1,
-    });
+  //   const model = ml5.poseNet(modelReady, {
+  //     architecture: 'ResNet50',
+  //     detectionType: 'single',
+  //     quantBytes: 4,
+  //     outputStride: 32,
+  //     inputResolution: 193, // default 257
+  //     maxPoseDetections: 1,
+  //   });
     
-    setPoseNet(model);
-  }, [poseNet]);
+  //   setPoseNet(model);
+  // }, [poseNet]);
 
-  // setup canvas
-  useEffect(() => {
-    if (!videoRef || !canvasRef || !poseNet) {
-      return;
-    }
+  // // setup canvas
+  // useEffect(() => {
+  //   if (!videoRef || !canvasRef || !poseNet) {
+  //     return;
+  //   }
 
-    const ctx = canvasRef.current.getContext('2d');
-    const video = videoRef.current;
+  //   const ctx = canvasRef.current.getContext('2d');
+  //   const video = videoRef.current;
 
-    poseNet.video = video;
+  //   poseNet.video = video;
 
-    let videoPose = null;
-    poseNet.on('pose', (results) => {
-      videoPose = results[0];
-    });
+  //   let videoPose = null;
+  //   poseNet.on('pose', (results) => {
+  //     videoPose = results[0];
+  //   });
 
-    const drawCameraIntoCanvas = () => {
-      // Draw the video element into the canvas
-      ctx.drawImage(video, 0, 0, 560, 420);
-      // We can call both functions to draw all keypoints and the skeletons
-      if (videoPose !== null) {
-        if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
-          drawKeypoints(videoPose, 0.2, ctx);
-          drawSkeleton(videoPose, ctx);
-        }
-      }
-      window.requestAnimationFrame(drawCameraIntoCanvas);
-    }
-    // Loop over the drawCameraIntoCanvas function
-    drawCameraIntoCanvas();
-  }, [videoRef, canvasRef, poseNet]);
+  //   const drawCameraIntoCanvas = () => {
+  //     // Draw the video element into the canvas
+  //     ctx.drawImage(video, 0, 0, 560, 420);
+  //     // We can call both functions to draw all keypoints and the skeletons
+  //     if (videoPose !== null) {
+  //       if (videoPose.pose.score >= MIN_POSE_CONFIDENCE) {
+  //         drawKeypoints(videoPose, 0.2, ctx);
+  //         drawSkeleton(videoPose, ctx);
+  //       }
+  //     }
+  //     window.requestAnimationFrame(drawCameraIntoCanvas);
+  //   }
+  //   // Loop over the drawCameraIntoCanvas function
+  //   drawCameraIntoCanvas();
+  // }, [videoRef, canvasRef, poseNet]);
 
   /* ============================================ TWILIO ============================================ */
 
@@ -255,13 +257,32 @@ function Room() {
 
         <div className="local-participant">
           {room ? (
-            <Participant
-              key={room.localParticipant.sid}
-              participant={room.localParticipant}
-              setVideoRef={setVideoRef}
-              setCanvasRef={setCanvasRef}
-              isPlayer={true}
-              score={leaderboard[room.localParticipant.identity]}
+            // <Participant
+            //   key={room.localParticipant.sid}
+            //   participant={room.localParticipant}
+            //   setVideoRef={setVideoRef}
+            //   setCanvasRef={setCanvasRef}
+            //   isPlayer={true}
+            //   score={leaderboard[room.localParticipant.identity]}
+            // />
+              //     architecture: 'ResNet50',
+  //     detectionType: 'single',
+  //     quantBytes: 4,
+  //     outputStride: 32,
+  //     inputResolution: 193, // default 257
+  //     maxPoseDetections: 1,
+            <PoseNet
+              className="posenet"
+              modelConfig={{
+                architecture: 'ResNet50',
+                quantBytes: 4,
+                outputStride: 32,
+                inputResolution: 193,
+              }}
+              inferenceConfig={{
+                decodingMethod: 'single-person',
+                maxDetections: 1,
+              }}
             />
           ) : null}
         </div>

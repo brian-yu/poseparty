@@ -17,7 +17,7 @@
     align-items: flex-end;
 }
 
-.reference-img, .video-wrapper > video, .video-wrapper > canvas {
+.reference-img, .video-wrapper > video, .video-wrapper > canvas, .posenet {
     border-radius: 15px;
     border: 10px;
     border-color: #74b9ff;
@@ -30,7 +30,7 @@
     margin-right: 150px;
 }
 
-.local-participant > video {
+.local-participant > video, .posenet {
     width: 560px;
     height: 420px;
 }
@@ -66,4 +66,8 @@
 	-webkit-transition: .4s;
 	transition: .4s;
     font-size: 20pt;
+}
+
+.posenet {
+    transform: scaleX(-1);
 }
