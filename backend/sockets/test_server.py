@@ -57,7 +57,7 @@ class Player:
         self.ready = False
     
     async def send(self, data):
-        await self.websocket.send(json.dumps(data))
+        await self.websocket.send_str(json.dumps(data))
 
 class Game:
     def __init__(self, room):
