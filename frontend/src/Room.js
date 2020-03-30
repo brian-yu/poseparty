@@ -14,8 +14,8 @@ import POSE_MAP from './moves'; // maps image names to pose objects.
 import './Room.css';
 
 const SIMILARITY_THRESHOLD_EXCELLENT = 0.15;
-const SIMILARITY_THRESHOLD_GOOD = 0.5;
-const SIMILARITY_THRESHOLD_OKAY = 0.3;
+const SIMILARITY_THRESHOLD_GOOD = 0.45;
+const SIMILARITY_THRESHOLD_OKAY = 0.7;
 const GameStateEnum = Object.freeze({ Waiting: 1, Playing: 2, Finished: 3 });
 const RoundStateEnum = Object.freeze({ Started: 1, Ended: 2});
 
@@ -254,10 +254,10 @@ function Room() {
     if (similarity <= SIMILARITY_THRESHOLD_EXCELLENT) {
       str = 'Excellent!!'
       color = '#27ae60';
-    } else if (similarity < SIMILARITY_THRESHOLD_GOOD) {
+    } else if (similarity <= SIMILARITY_THRESHOLD_GOOD) {
       str = 'Good!';
       color = '#7bed9f';
-    } else if (similarity < SIMILARITY_THRESHOLD_GOOD) {
+    } else if (similarity <= SIMILARITY_THRESHOLD_OKAY) {
       str = 'Okay';
       color = 'orange';
     } else {
