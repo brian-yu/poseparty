@@ -2,3 +2,4 @@ websockets
 asyncio
 gunicorn==19.7.1
 flask
+aiohttp

@@ -1,0 +1,14 @@
+runtime: python
+env: flex
+
+runtime_config:
+    python_version: 3.7
+
+
+service: socket-server
+# entrypoint: gunicorn -b :$PORT server:app
+
+entrypoint: gunicorn test_server:app -b :$PORT --worker-class aiohttp.GunicornWebWorker
+
+manual_scaling:
+    instances: 1
