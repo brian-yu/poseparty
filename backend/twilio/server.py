@@ -7,6 +7,7 @@ from twilio.jwt.access_token.grants import VideoGrant
 from twilio.rest import Client
 import random
 from time import sleep
+import os
 
 
 app = Flask(__name__)
@@ -14,10 +15,10 @@ CORS(app)
 
 # Substitute your Twilio AccountSid and ApiKey details
 # DO NOT CHANGE - all specific to Aaron's Twilio account
-ACCOUNT_SID = '***REMOVED***'
-AUTH_TOKEN = '***REMOVED***'
-API_KEY_SID = '***REMOVED***'
-API_KEY_SECRET = '***REMOVED***'
+ACCOUNT_SID = os.environ[ACCOUNT_SID]
+AUTH_TOKEN = os.environ[AUTH_TOKEN]
+API_KEY_SID = os.environ[API_KEY_SID]
+API_KEY_SECRET = os.environ[API_KEY_SECRET]
 client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
 NAME_WORDS = [
