@@ -49,6 +49,15 @@ function Room() {
 
   const [similarity, setSimilarity] = useState();
   
+  const getNextRoom = () => {
+    const lastChar = roomID[roomID.length - 1];
+    let newChar = String.fromCharCode(lastChar.charCodeAt() + 1)
+    if( /[^a-zA-Z0-9]/.test( newChar ) ) {
+      newChar = 'A';
+    }
+    return roomID.substring(0, roomID.length - 1) + newChar;
+  }
+
   /* ============================================ WEBSOCKETS ============================================ */
 
   // Log message output and change app state
@@ -285,6 +294,7 @@ function Room() {
       <div className="game-over">
         <h1>Game Over!</h1>
         <h1>{bestPlayer} won with {leaderboard[bestPlayer]} points!</h1>
+        <a className="button display" href={`./room/${getNextRoom()}`}>Join a new room</a>
       </div>
     );
   }
