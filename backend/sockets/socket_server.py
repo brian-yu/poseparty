@@ -202,10 +202,10 @@ async def handler(websocket, path):
             else:
                 logging.error("unsupported event: {}".format(data))
     finally:
-        game = USERS[websocket]
-        await game.remove_player(websocket)
-        USERS.pop(websocket)
-        pass
+        if websocket in game:
+            game = USERS[websocket]
+            await game.remove_player(websocket)
+            USERS.pop(websocket)
 
 
 
