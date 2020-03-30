@@ -75,6 +75,8 @@ class Game:
         logging.info('added player {} to game in room {}'.format(player.name, self.room))
     
     async def remove_player(self, websocket):
+        if websocket not in self.players:
+            return
         logging.info('removed player {} from game in room {}'.format(self.players[websocket].name, self.room))
         self.players.pop(websocket)
 
@@ -202,7 +204,7 @@ async def handler(websocket, path):
             else:
                 logging.error("unsupported event: {}".format(data))
     finally:
-        if websocket in game:
+        if websocket in USERS:
             game = USERS[websocket]
             await game.remove_player(websocket)
             USERS.pop(websocket)
