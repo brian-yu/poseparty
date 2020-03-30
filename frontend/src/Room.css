@@ -35,6 +35,16 @@
     margin-right: 150px;
 }
 
+.game-over {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-over > * {
+    margin-bottom: 20px;
+}
+
 .reference-img {
     max-width: 560px;
     max-height: 420px;
