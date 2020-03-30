@@ -2,6 +2,7 @@
     padding: 0 50px;
     display: flex;
     align-items: center;
+    margin-bottom: 10px;
 }
 .title {
     margin-right: 150px;
@@ -39,6 +40,7 @@
     max-height: 420px;
     width: auto;
     height: auto;
+    transform: scaleX(-1);
 }
 
 .posenet {

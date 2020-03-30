@@ -45,7 +45,7 @@ USERS = {}
 
 # Need to keep in sync with /frontend/public/img/*.
 IMAGE_NAMES = ['dance.png', 'eagle.png', 'garland.png', 'gate.png', 'half-moon.png', 'parivrtta-trikonasana.png', 'vrksasana.png', 
-'warrior-I.png', 'warrior-II.png']
+'warrior-I.png', 'warrior-II.png', 'bigtoepose.jpg', 'chairpose.jpg']
 
 class Player:
     def __init__(self, websocket, game, name):
@@ -61,7 +61,7 @@ class Player:
 class Game:
     def __init__(self, room):
         self.room = room
-        self.total_rounds = 5 # maybe change later
+        self.total_rounds = 3 # maybe change later
         self.current_round = 0
         # map websocket to player objects
         self.players = {} 
@@ -202,10 +202,10 @@ async def handler(websocket, path):
             else:
                 logging.error("unsupported event: {}".format(data))
     finally:
-        game = USERS[websocket]
-        await game.remove_player(websocket)
-        USERS.pop(websocket)
-        pass
+        if websocket in game:
+            game = USERS[websocket]
+            await game.remove_player(websocket)
+            USERS.pop(websocket)
 
 
 

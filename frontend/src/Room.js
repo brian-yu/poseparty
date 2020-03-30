@@ -34,15 +34,15 @@ function Room() {
   const [gameState, setGameState] = useState(GameStateEnum.Waiting);
   const [roundState, setRoundState] = useState(RoundStateEnum.Ended);
   const [currentRound, setCurrentRound] = useState(0);
+  const [totalRounds, setTotalRounds] = useState(0);
+  const [gameProgress, setGameProgress] = useState(0);
   const [correctFrames, setCorrectFrames] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
   const imageRef = useRef();
-  const [imageName, setImageName] = useState('tadasana.png');
-  // set getImagePose to true whenever you want to get the pose of the
-  // reference image. set it to false immediately after you get the
-  // result pose vector so that the posenet can run on the video.
-  const [getImagePose, setGetImagePose] = useState(true);
+
+  // TODO: handle loading of reference image poses.
+  const [imageName, setImageName] = useState('vrksasana.png');
   const [imagePose, setImagePose] = useState(null);
 
   const [similarity, setSimilarity] = useState();
@@ -70,14 +70,11 @@ function Room() {
           }
           setRoundState(RoundStateEnum.Started);
           setCurrentRound(data.currentRound);
+          setTotalRounds(data.totalRounds);
           setCorrectFrames(0);
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
           setImageName(data.imageName);
-          setGetImagePose(true); // ask posenet to recalculate image pose.
-          // TODO: call function to display new scores
-          // Update images/pose
-          // Start new round animation
           const finishRound = () => {
             setRoundState(RoundStateEnum.Ended);
           }
@@ -123,6 +120,7 @@ function Room() {
       console.log(correctFrames);
       console.log(totalFrames);
       console.log(score);
+      setGameProgress(((currentRound+1)/totalRounds));
       // Should probably include round number here if we have the frame counts as dependencies
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
@@ -196,27 +194,12 @@ function Room() {
   /* ========================================= POSENET + SCORING ========================================= */
 
   const handlePose = (pose) => {
-    if (getImagePose) {
-
-      console.log('SETTING IMAGE POSE TO', imageName, pose)
-      setGetImagePose(false);
-      setImagePose(pose);
-
-      return;
-    }
-
     if (!imagePose || !pose || gameState === GameStateEnum.Finished) {
       return;
     }
 
     // handle scoring of video pose
     const s = poseSimilarity(imagePose, pose);
-    // if similarity is 0, we have a bug since the
-    // posenet is returning the pose for the image still.
-    if (s < 0.01) {
-      return;
-    }
-
     setSimilarity(s);
 
     // on initial pose, set ready if true.
@@ -242,7 +225,10 @@ function Room() {
     if (gameState === GameStateEnum.Waiting) {
       return (
         <>
-          <h1>Get in position to ready up!</h1>
+          {!ready ?
+            <h1>Get in position to ready up!</h1> :
+            <h1 style={{color: '#55efc4'}}>You are ready!</h1>
+          }
           <h2>The game will start when everyone is ready.</h2>
         </>
       );
@@ -268,17 +254,39 @@ function Room() {
   return <h1 style={{color: color}}>{str}{' '}{score}</h1>;
   }
 
+  const StatusBar = () => {
+    if (totalRounds > 0){
+      const progress = (gameProgress*100) + '%';
+      return (
+        <div style={{border: '2px solid #74b9ff', borderRadius: '10px', marginTop: '10px', marginBottom: '10px'}}>
+          <div style={{backgroundColor: '#55efc4', height: '24px', width: progress, borderRadius: '10px'}}></div>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  const GameOver = () => {
+    const bestPlayer = Object.keys(leaderboard).reduce((a, b) => leaderboard[a] > leaderboard[b] ? a : b);
+    return (
+      <div className="game-over">
+        <h1>Game Over!</h1>
+        <h1>{bestPlayer} won with {leaderboard[bestPlayer]} points!</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="room">
       <div className="header">
         <h1 className="title display"><a href="/">PoseParty</a></h1>
-        <p>Send this link to your friends: <a href={window.location.href}>{ window.location.href }</a></p>
+        <h2>Send this link to your friends: <a href={window.location.href} style={{color: '#2ecc71'}}>{ window.location.href }</a></h2>
       </div>
 
       <div className="main-container">
 
         { gameState === GameStateEnum.Finished ? 
-          <h1 className="game-over">Game Over!</h1> :
+          <GameOver /> :
           <img className="reference-img" 
             ref={imageRef}
             src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
@@ -291,8 +299,7 @@ function Room() {
               <>
                 <PoseNet
                   className="posenet"
-                  input={getImagePose ? imageRef.current : false}
-                  frameRate={10}
+                  frameRate={15}
                   modelConfig={{
                     architecture: 'ResNet50',
                     quantBytes: 4,
@@ -312,7 +319,7 @@ function Room() {
           </div>
         </div>
       </div>
-
+      <StatusBar />
       {remoteParticipants.length > 0 ? (
         <>
           <div className="remote-participants">{remoteParticipants}</div>
