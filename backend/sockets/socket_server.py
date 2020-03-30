@@ -45,7 +45,7 @@ USERS = {}
 
 # Need to keep in sync with /frontend/public/img/*.
 IMAGE_NAMES = ['dance.png', 'eagle.png', 'garland.png', 'gate.png', 'half-moon.png', 'parivrtta-trikonasana.png', 'vrksasana.png', 
-'warrior-I.png', 'warrior-II.png']
+'warrior-I.png', 'warrior-II.png', 'bigtoepose.jpg', 'chairpose.jpg']
 
 class Player:
     def __init__(self, websocket, game, name):
