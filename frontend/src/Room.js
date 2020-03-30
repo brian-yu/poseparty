@@ -215,9 +215,14 @@ function Room() {
   // UpdateScore
   useEffect(() => {
     if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Started) {
-      const frameIsCorrect = similarity < SIMILARITY_THRESHOLD_GOOD;
       setTotalFrames(totalFrames+1);
-      setCorrectFrames(correctFrames + frameIsCorrect);
+      if (similarity < SIMILARITY_THRESHOLD_GOOD) {
+        setCorrectFrames(correctFrames + 1);
+      } else if (similarity < SIMILARITY_THRESHOLD_OKAY) {
+        setCorrectFrames(correctFrames + 0.4);
+      } else {
+        setCorrectFrames(correctFrames + 0.1);
+      }
     }
   }, [similarity, gameState, roundState]);
 
