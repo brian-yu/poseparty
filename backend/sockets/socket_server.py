@@ -45,7 +45,7 @@ USERS = {}
 
 # Need to keep in sync with /frontend/public/img/*.
 IMAGE_NAMES = ['dance.png', 'eagle.png', 'garland.png', 'gate.png', 'half-moon.png', 'parivrtta-trikonasana.png', 'vrksasana.png', 
-'warrior-I.png', 'warrior-II.png']
+'warrior-I.png', 'warrior-II.png', 'bigtoepose.jpg', 'chairpose.jpg']
 
 class Player:
     def __init__(self, websocket, game, name):
@@ -202,10 +202,10 @@ async def handler(websocket, path):
             else:
                 logging.error("unsupported event: {}".format(data))
     finally:
-        game = USERS[websocket]
-        await game.remove_player(websocket)
-        USERS.pop(websocket)
-        pass
+        if websocket in game:
+            game = USERS[websocket]
+            await game.remove_player(websocket)
+            USERS.pop(websocket)
 
 
 
@@ -215,9 +215,11 @@ parser.add_argument('--env', default='dev', type=str)
 args = parser.parse_args()
 
 if args.env == "prod":
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_verify_locations('/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
-    start_server = websockets.serve(handler, args.host, 6789, ssl=ssl_context)
+    # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    # ssl_context.load_verify_locations('/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(certfile='/etc/letsencrypt/live/socket.poseparty.brian.lol/cert.pem', keyfile='/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
+    start_server = websockets.serve(handler, args.host, 6789, ssl=context)
 else:
     start_server = websockets.serve(handler, args.host, 6789)
 
