@@ -43,7 +43,7 @@ function Room() {
   const imageRef = useRef();
 
   // TODO: handle loading of reference image poses.
-  const [imageName, setImageName] = useState('vrksasana.png');
+  const [imageName, setImageName] = useState('tadasana.png');
   const [imagePose, setImagePose] = useState(POSE_MAP[imageName]);
 
   const [similarity, setSimilarity] = useState();
