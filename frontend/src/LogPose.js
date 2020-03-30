@@ -7,6 +7,9 @@ function LogPose() {
 
     const { imageName } = useParams();
     const imageRef = useRef();
+    const [poseLogged, setPoseLogged] = useState(false);
+    const [count, setCount] = useState(0);
+    console.log(imageRef)
 
     return (
         <>
@@ -14,11 +17,11 @@ function LogPose() {
             <img className="reference-img" 
             ref={imageRef}
             src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
-            { imageRef.current !== null ? 
+            { imageRef.current !== null && !poseLogged? 
             <PoseNet
                   className="posenet"
                   input={imageRef.current}
-                  frameRate={.00001}
+                  frameRate={1}
                   modelConfig={{
                     architecture: 'ResNet50',
                     quantBytes: 4,
@@ -29,7 +32,14 @@ function LogPose() {
                     decodingMethod: 'single-person',
                     maxDetections: 1,
                   }}
-                  onEstimate={(pose) => console.log(pose)}
+                  onEstimate={(image,pose) => {
+                    if (!(image instanceof HTMLMediaElement)) {
+                      console.log(image, pose)
+                      console.log("\"" + imageName + "\": " + JSON.stringify(pose) + ',')
+                      setPoseLogged(true);
+                    }
+                    setCount(count+1);
+                  }}
                 /> : null}
         </>
 
