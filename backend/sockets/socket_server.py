@@ -61,7 +61,7 @@ class Player:
 class Game:
     def __init__(self, room):
         self.room = room
-        self.total_rounds = 3 # maybe change later
+        self.total_rounds = 7 # maybe change later
         self.current_round = 0
         # map websocket to player objects
         self.players = {} 
