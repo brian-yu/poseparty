@@ -249,13 +249,13 @@ function Room() {
     let str = null;
     let color = null;
     if (similarity < SIMILARITY_THRESHOLD_GOOD) {
-      str = 'Excellent!'
+      str = 'Excellent!!'
       color = 'green';
     } else if (similarity < SIMILARITY_THRESHOLD_OKAY) {
-      str = 'Okay';
+      str = 'Good!';
       color = 'orange';
     } else {
-      str = 'Poor';
+      str = 'Meh';
       color = 'red';
     }
   return <h1 style={{color: color}}>{str}{' '}{score}</h1>;
