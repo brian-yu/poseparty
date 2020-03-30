@@ -1,4 +1,3 @@
-# [START gae_python37_app]
 import flask
 from flask import Flask, make_response
 from flask_cors import CORS, cross_origin
@@ -15,10 +14,10 @@ CORS(app)
 
 # Substitute your Twilio AccountSid and ApiKey details
 # DO NOT CHANGE - all specific to Aaron's Twilio account
-ACCOUNT_SID = os.environ[ACCOUNT_SID]
-AUTH_TOKEN = os.environ[AUTH_TOKEN]
-API_KEY_SID = os.environ[API_KEY_SID]
-API_KEY_SECRET = os.environ[API_KEY_SECRET]
+ACCOUNT_SID = os.environ['ACCOUNT_SID']
+AUTH_TOKEN = os.environ['AUTH_TOKEN']
+API_KEY_SID = os.environ['API_KEY_SID']
+API_KEY_SECRET = os.environ['API_KEY_SECRET']
 client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
 NAME_WORDS = [
@@ -74,5 +73,3 @@ def getToken(room):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# [END gae_python37_app]
