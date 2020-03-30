@@ -13,8 +13,9 @@ import POSE_MAP from './moves'; // maps image names to pose objects.
 
 import './Room.css';
 
-const SIMILARITY_THRESHOLD_GOOD = 0.15;
-const SIMILARITY_THRESHOLD_OKAY = 0.5;
+const SIMILARITY_THRESHOLD_EXCELLENT = 0.15;
+const SIMILARITY_THRESHOLD_GOOD = 0.5;
+const SIMILARITY_THRESHOLD_OKAY = 0.3;
 const GameStateEnum = Object.freeze({ Waiting: 1, Playing: 2, Finished: 3 });
 const RoundStateEnum = Object.freeze({ Started: 1, Ended: 2});
 
@@ -207,7 +208,7 @@ function Room() {
     // on initial pose, set ready if true.
     // exploits the fact that ready is only changed once.
     // TODO: tune threshold
-    if (!ready && s < SIMILARITY_THRESHOLD_GOOD) {
+    if (!ready && s < SIMILARITY_THRESHOLD_EXCELLENT) {
       setReady(true);
     }
   }
@@ -216,10 +217,12 @@ function Room() {
   useEffect(() => {
     if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Started) {
       setTotalFrames(totalFrames+1);
-      if (similarity < SIMILARITY_THRESHOLD_GOOD) {
+      if (similarity <= SIMILARITY_THRESHOLD_EXCELLENT) {
         setCorrectFrames(correctFrames + 1);
-      } else if (similarity < SIMILARITY_THRESHOLD_OKAY) {
-        setCorrectFrames(correctFrames + 0.4);
+      } else if (similarity <= SIMILARITY_THRESHOLD_GOOD) {
+        setCorrectFrames(correctFrames + 0.6);
+      } else if (similarity <= SIMILARITY_THRESHOLD_OKAY) {
+        setCorrectFrames(correctFrames + 0.3);
       } else {
         setCorrectFrames(correctFrames + 0.1);
       }
@@ -248,14 +251,17 @@ function Room() {
     let score = Math.round((1-similarity)*100);
     let str = null;
     let color = null;
-    if (similarity < SIMILARITY_THRESHOLD_GOOD) {
+    if (similarity <= SIMILARITY_THRESHOLD_EXCELLENT) {
       str = 'Excellent!!'
-      color = 'green';
-    } else if (similarity < SIMILARITY_THRESHOLD_OKAY) {
+      color = '#27ae60';
+    } else if (similarity < SIMILARITY_THRESHOLD_GOOD) {
       str = 'Good!';
+      color = '#7bed9f';
+    } else if (similarity < SIMILARITY_THRESHOLD_GOOD) {
+      str = 'Okay';
       color = 'orange';
     } else {
-      str = 'Meh';
+      str = 'Meh..';
       color = 'red';
     }
   return <h1 style={{color: color}}>{str}{' '}{score}</h1>;
