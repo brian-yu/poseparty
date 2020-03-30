@@ -9,6 +9,7 @@ import { poseSimilarity } from './posenet_utils';
 
 import useWebSocket from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
+import POSE_MAP from './moves'; // maps image names to pose objects.
 
 import './Room.css';
 
@@ -43,7 +44,7 @@ function Room() {
 
   // TODO: handle loading of reference image poses.
   const [imageName, setImageName] = useState('vrksasana.png');
-  const [imagePose, setImagePose] = useState(null);
+  const [imagePose, setImagePose] = useState(POSE_MAP[imageName]);
 
   const [similarity, setSimilarity] = useState();
   
@@ -75,6 +76,7 @@ function Room() {
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
           setImageName(data.imageName);
+          setImagePose(POSE_MAP[data.imageName]);
           const finishRound = () => {
             setRoundState(RoundStateEnum.Ended);
           }
