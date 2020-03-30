@@ -40,11 +40,9 @@ function Room() {
   const [totalFrames, setTotalFrames] = useState(0);
   const [leaderboard, setLeaderboard] = useState({});
   const imageRef = useRef();
+
+  // TODO: handle loading of reference image poses.
   const [imageName, setImageName] = useState('vrksasana.png');
-  // set getImagePose to true whenever you want to get the pose of the
-  // reference image. set it to false immediately after you get the
-  // result pose vector so that the posenet can run on the video.
-  const [getImagePose, setGetImagePose] = useState(true);
   const [imagePose, setImagePose] = useState(null);
 
   const [similarity, setSimilarity] = useState();
@@ -77,10 +75,6 @@ function Room() {
           setTotalFrames(0);
           setLeaderboard(newLeaderboard);
           setImageName(data.imageName);
-          setGetImagePose(true); // ask posenet to recalculate image pose.
-          // TODO: call function to display new scores
-          // Update images/pose
-          // Start new round animation
           const finishRound = () => {
             setRoundState(RoundStateEnum.Ended);
           }
@@ -200,29 +194,12 @@ function Room() {
   /* ========================================= POSENET + SCORING ========================================= */
 
   const handlePose = (pose) => {
-    // FIX BUG.
-    // ACCIDENTALLY SETTING POSE TO BE USER POSE FROM LAST ROUND.
-    if (getImagePose) {
-
-      console.log('SETTING IMAGE POSE TO', imageName, pose)
-      setGetImagePose(false);
-      setImagePose(pose);
-
-      return;
-    }
-
     if (!imagePose || !pose || gameState === GameStateEnum.Finished) {
       return;
     }
 
     // handle scoring of video pose
     const s = poseSimilarity(imagePose, pose);
-    // if similarity is 0, we have a bug since the
-    // posenet is returning the pose for the image still.
-    if (s < 0.01) {
-      return;
-    }
-
     setSimilarity(s);
 
     // on initial pose, set ready if true.
@@ -319,7 +296,6 @@ function Room() {
               <>
                 <PoseNet
                   className="posenet"
-                  input={getImagePose ? imageRef.current : false}
                   frameRate={15}
                   modelConfig={{
                     architecture: 'ResNet50',
