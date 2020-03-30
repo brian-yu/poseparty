@@ -79,7 +79,7 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer, score }
           </>
           : <video ref={videoRef} width="400" height="300" autoPlay={true} />
         }
-        <audio ref={audioRef} autoPlay={true} muted={true} />
+        <audio ref={audioRef} autoPlay={true} />
         <div className='score-overlay'>{score}</div>
       </div>
     </div>
