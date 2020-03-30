@@ -215,9 +215,11 @@ parser.add_argument('--env', default='dev', type=str)
 args = parser.parse_args()
 
 if args.env == "prod":
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_verify_locations('/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
-    start_server = websockets.serve(handler, args.host, 6789, ssl=ssl_context)
+    # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    # ssl_context.load_verify_locations('/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(certfile='/etc/letsencrypt/live/socket.poseparty.brian.lol/cert.pem', keyfile='/etc/letsencrypt/live/socket.poseparty.brian.lol/privkey.pem')
+    start_server = websockets.serve(handler, args.host, 6789, ssl=context)
 else:
     start_server = websockets.serve(handler, args.host, 6789)
 
