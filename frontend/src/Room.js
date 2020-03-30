@@ -294,7 +294,7 @@ function Room() {
       <div className="game-over">
         <h1>Game Over!</h1>
         <h1>{bestPlayer} won with {leaderboard[bestPlayer]} points!</h1>
-        <a className="button display" href={`./room/${getNextRoom()}`}>Join a new room</a>
+        <a className="button display" href={`/room/${getNextRoom()}`}>Join a new room</a>
       </div>
     );
   }
