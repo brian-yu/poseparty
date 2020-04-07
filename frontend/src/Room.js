@@ -29,7 +29,7 @@ function Room() {
   const [username, setUsername] = useState(null);
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
-  const [sendMessage, lastMessage, readyState, getWebSocket] = useWebSocket(SOCKET_HOST);
+  const [sendMessage, lastMessage] = useWebSocket(SOCKET_HOST);
 
   // Game State
   const [ready, setReady] = useState(false);
