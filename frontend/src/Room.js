@@ -9,7 +9,7 @@ import { poseSimilarity } from './posenet_utils';
 
 import useWebSocket from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
-import POSE_MAP from './moves'; // maps image names to pose objects.
+import POSE_MAP from './data/moves'; // maps image names to pose objects.
 
 import './Room.css';
 
