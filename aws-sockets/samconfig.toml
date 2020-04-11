@@ -8,4 +8,5 @@ s3_prefix = "sam-app"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+parameter_overrides = "TableName=\"poseparty_connections\""
 
