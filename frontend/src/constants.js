@@ -10,5 +10,5 @@ export const API_HOST = PRODUCTION ? PROD_API_HOST : DEV_API_HOST;
 
 const DEV_SOCKET_HOST = 'wss://socket-server-dot-hoohacks-2020-272521.appspot.com'; // socket server
 // const DEV_SOCKET_HOST = 'ws://127.0.0.1:6789';
-const PROD_SOCKET_HOST = 'wss://socket.poseparty.brian.lol:6789';
+const PROD_SOCKET_HOST = 'wss://poseparty-backend.glitch.me';
 export const SOCKET_HOST = PRODUCTION ? PROD_SOCKET_HOST : DEV_SOCKET_HOST;
