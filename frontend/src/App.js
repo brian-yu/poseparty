@@ -8,11 +8,19 @@ import {
 
 import Room from './Room';
 import LogPose from './LogPose';
+import { GLITCH_SOCKET_HTTP_HOST } from './constants';
 import './App.css';
 
 function App() {
 
   const [joinURL, setJoinURL] = useState();
+
+  // Ping Glitch socket server on startup 
+  useEffect(() => {
+    fetch(GLITCH_SOCKET_HTTP_HOST, {
+      mode: 'no-cors'
+    });
+  }, []);
 
   const generateRoomID = () => {
     return Math.floor(Math.random() * 0xFFFFFF).toString(16);

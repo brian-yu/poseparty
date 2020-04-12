@@ -12,3 +12,6 @@ const DEV_SOCKET_HOST = 'wss://poseparty-backend.glitch.me'; // socket server
 // const DEV_SOCKET_HOST = 'ws://127.0.0.1:6789';
 const PROD_SOCKET_HOST = 'wss://poseparty-backend.glitch.me';
 export const SOCKET_HOST = PRODUCTION ? PROD_SOCKET_HOST : DEV_SOCKET_HOST;
+
+// For pinging Glitch socket server
+export const GLITCH_SOCKET_HTTP_HOST = 'https://poseparty-backend.glitch.me';
