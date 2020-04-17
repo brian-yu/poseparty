@@ -33,12 +33,12 @@ function LogPose() {
                     maxDetections: 1,
                   }}
                   onEstimate={(pose,image) => {
+                    console.log(image, pose)
                     if (!(image instanceof HTMLMediaElement)) {
                     const roundedPose = JSON.stringify(pose, (key, val) => {
                       return val.toFixed ? Number(val.toFixed(1)) : val;
                     })
-                      console.log(image, roundedPose)
-                      console.log("\"" + imageName + "\": " + JSON.stringify(roundedPose) + ',')
+                      console.log("\"" + imageName + "\": " + roundedPose + ',')
                     setPoseLogged(true);
                     }
                     setCount(count+1);
