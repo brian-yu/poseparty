@@ -53,10 +53,10 @@ export default function PoseNet({
           drawKeypoints(ctx, lastPose.keypoints)
         }
         const pose = await net.estimateSinglePose(image, inferenceConfigRef.current)
+        // onEstimateRef.current(pose, image) // Use for logging
         if (pose.score < minPartConfidence) {
           return;
         }
-        // onEstimateRef.current(pose, image) // Use for logging
         onEstimateRef.current(pose)
         lastPose = pose;
       } catch (err) {
