@@ -8,7 +8,6 @@ function LogPose() {
     const { imageName } = useParams();
     const imageRef = useRef();
     const [poseLogged, setPoseLogged] = useState(false);
-    const [count, setCount] = useState(0);
     console.log(imageRef)
 
     return (
@@ -32,13 +31,13 @@ function LogPose() {
                     decodingMethod: 'single-person',
                     maxDetections: 1,
                   }}
-                  onEstimate={(image,pose) => {
-                    if (!(image instanceof HTMLMediaElement)) {
-                      console.log(image, pose)
-                      console.log("\"" + imageName + "\": " + JSON.stringify(pose) + ',')
-                      setPoseLogged(true);
-                    }
-                    setCount(count+1);
+                  onEstimate={(pose) => {
+                    const roundedPose = JSON.stringify(pose, (key, val) => {
+                      return val.toFixed ? Number(val.toFixed(1)) : val;
+                    })
+                    console.log(roundedPose)
+                    console.log("\"" + imageName + "\": " + roundedPose + ',')
+                    setPoseLogged(true);
                   }}
                 /> : null}
         </>

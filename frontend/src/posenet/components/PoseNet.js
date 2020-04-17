@@ -56,7 +56,6 @@ export default function PoseNet({
         if (pose.score < minPartConfidence) {
           return;
         }
-        // onEstimateRef.current(image, pose) // Use for logging
         onEstimateRef.current(pose)
         lastPose = pose;
       } catch (err) {
