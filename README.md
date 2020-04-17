@@ -1,6 +1,6 @@
-# [PoseParty](https://poseparty.brian.lol)
+<img alt="demo GIF" src="https://raw.githubusercontent.com/brian-yu/poseparty/master/poseparty.gif" width="100%">
 
-![demo GIF](https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/software_thumbnail_photos/000/994/887/datas/medium.gif)
+# [PoseParty](https://poseparty.brian.lol)
 
 ## Inspiration
 
