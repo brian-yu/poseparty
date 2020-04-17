@@ -1,5 +1,7 @@
 # [PoseParty](https://poseparty.brian.lol)
 
+![demo GIF](https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/software_thumbnail_photos/000/994/887/datas/medium.gif)
+
 ## Inspiration
 
 Over the course of this Coronavirus quarantine, we've discovered that it's significantly harder to connect with friends in a way that promotes physical activity. We wanted to solve this issue with a fun game that encourages a whole group of friends to get out of their chairs in an exciting and competitive way.
