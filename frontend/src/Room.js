@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams } from "react-router-dom";
 import Video from 'twilio-video';
 import PoseNet from './posenet/components/PoseNet';
@@ -7,7 +7,7 @@ import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
 import { poseSimilarity } from './posenet_utils';
 
-import useWebSocket from 'react-use-websocket';
+import useWebSocket, {ReadyState} from 'react-use-websocket';
 import { SOCKET_HOST } from './constants';
 import POSE_MAP from './data/moves'; // maps image names to pose objects.
 
@@ -29,7 +29,14 @@ function Room() {
   const [username, setUsername] = useState(null);
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
-  const [sendMessage, lastMessage] = useWebSocket(SOCKET_HOST);
+  
+  // Websockets
+  const SOCKET_STATIC_OPTIONS = useMemo(() => ({
+    shouldReconnect: (closeEvent) => true,
+    reconnectAttempts: 10,
+    reconnectInterval: 2000,
+  }), []);
+  const [sendMessage, lastMessage, readyState] = useWebSocket(SOCKET_HOST, SOCKET_STATIC_OPTIONS);
 
   // Game State
   const [ready, setReady] = useState(false);
@@ -109,23 +116,23 @@ function Room() {
 
   // Join the game
   useEffect(() => {
-    if (username !== null) {
+    if (username !== null && readyState === ReadyState.OPEN) {
       sendMessage(JSON.stringify({ action: 'JOIN_GAME', name: username, room: roomID}));
       // setReady(true); // TODO: change this elsewhere
     }
-  }, [roomID, sendMessage, username]);
+  }, [roomID, readyState, sendMessage, username]);
 
   // Set ready message
   useEffect(() => {
-    if (ready === true) {
+    if (ready === true && readyState === ReadyState.OPEN) {
       console.log('setting ready')
       sendMessage(JSON.stringify({ action: 'SET_READY', room: roomID}));
     }
-  }, [ready, roomID, sendMessage]);
+  }, [ready, readyState, roomID, sendMessage]);
 
   // Submit Score
   useEffect(() => {
-    if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended) {
+    if (gameState === GameStateEnum.Playing && roundState === RoundStateEnum.Ended && readyState === ReadyState.OPEN) {
       // TODO: check for NaN or Infinity
       const score = Math.round((correctFrames/totalFrames) * 10000);
       console.log('scoring');
@@ -136,7 +143,7 @@ function Room() {
       // Should probably include round number here if we have the frame counts as dependencies
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
-  }, [correctFrames, totalFrames, gameState, roomID, roundState, sendMessage]);
+  }, [correctFrames, totalFrames, gameState, readyState, roomID, roundState, sendMessage]);
 
   /* ============================================ TWILIO ============================================ */
 
