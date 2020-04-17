@@ -341,6 +341,7 @@ function Room() {
                     maxDetections: 1,
                   }}
                   onEstimate={(pose) => handlePose(pose)}
+                  websocketReadyState={readyState}
                 />
                 <DisplayScore />
               </>

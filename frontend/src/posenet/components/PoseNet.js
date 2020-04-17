@@ -3,7 +3,8 @@ import PropTypes from "prop-types"
 import Loading from "./Loading"
 import useInputImage from "../hooks/useInputImage"
 import useLoadPoseNet from "../hooks/useLoadPoseNet"
-import { drawKeypoints, getConfidentPoses } from "../util"
+import { drawKeypoints } from "../util"
+import { ReadyState } from 'react-use-websocket';
 
 export default function PoseNet({
   style,
@@ -12,6 +13,7 @@ export default function PoseNet({
   frameRate,
   input,
   onEstimate,
+  websocketReadyState,
   inferenceConfig,
   modelConfig,
   minPoseConfidence,
@@ -78,6 +80,7 @@ export default function PoseNet({
     <>
       <Loading name="model" target={net} />
       <Loading name="input" target={image} />
+      <Loading name="websocket" target={websocketReadyState === ReadyState.OPEN} />
       <font color="red">{errorMessage}</font>
       <video
         playsInline
