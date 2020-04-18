@@ -330,11 +330,16 @@ function Room() {
                 <PoseNet
                   className="posenet"
                   frameRate={15}
+                  // modelConfig={{
+                  //   architecture: 'ResNet50',
+                  //   quantBytes: 4,
+                  //   outputStride: 32,
+                  //   inputResolution: 193,
+                  // }}
                   modelConfig={{
-                    architecture: 'ResNet50',
-                    quantBytes: 4,
-                    outputStride: 32,
-                    inputResolution: 193,
+                    architecture: 'MobileNetV1',
+                    outputStride: 16,
+                    multiplier: 0.75,
                   }}
                   inferenceConfig={{
                     decodingMethod: 'single-person',

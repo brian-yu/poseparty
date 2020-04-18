@@ -28,6 +28,11 @@ function LogPose() {
                     outputStride: 32,
                     inputResolution: 193,
                   }}
+                  // modelConfig={{
+                  //   architecture: 'MobileNetV1',
+                  //   outputStride: 16,
+                  //   multiplier: 0.75,
+                  // }}
                   inferenceConfig={{
                     decodingMethod: 'single-person',
                     maxDetections: 1,
@@ -35,11 +40,11 @@ function LogPose() {
                   onEstimate={(pose,image) => {
                     console.log(image, pose)
                     if (!(image instanceof HTMLMediaElement)) {
-                    const roundedPose = JSON.stringify(pose, (key, val) => {
-                      return val.toFixed ? Number(val.toFixed(1)) : val;
-                    })
+                      const roundedPose = JSON.stringify(pose, (key, val) => {
+                        return val.toFixed ? Number(val.toFixed(1)) : val;
+                      })
                       console.log("\"" + imageName + "\": " + roundedPose + ',')
-                    setPoseLogged(true);
+                      setPoseLogged(true);
                     }
                     setCount(count+1);
                   }}
