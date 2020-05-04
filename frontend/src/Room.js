@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams } from "react-router-dom";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { useToasts } from 'react-toast-notifications'
 import Video from 'twilio-video';
 import PoseNet from './posenet/components/PoseNet';
 
@@ -29,6 +31,7 @@ function Room() {
   const [username, setUsername] = useState(null);
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
+  const { addToast } = useToasts()
   
   // Websockets
   const SOCKET_STATIC_OPTIONS = useMemo(() => ({
@@ -306,11 +309,20 @@ function Room() {
     );
   }
 
+  const roomLink = window.location.href.replace(window.location.search, "");
   return (
     <div className="room">
       <div className="header">
         <h1 className="title display"><a href="/">PoseParty</a></h1>
-        <h2>Send this link to your friends: <a href={window.location.href} style={{color: '#2ecc71'}}>{ window.location.href }</a></h2>
+        <h2>Send this link to your friends:
+          <CopyToClipboard text={roomLink}
+            onCopy={() => addToast('Copied link!', {
+              appearance: 'info',
+              autoDismiss: true,
+            })}>
+            <span style={{color: '#2ecc71', cursor: 'pointer'}}> { roomLink } </span>
+          </CopyToClipboard>
+        </h2>
       </div>
 
       <div className="main-container">

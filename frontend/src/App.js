@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { ToastProvider } from 'react-toast-notifications'
 import {
   BrowserRouter as Router,
   Switch,
@@ -30,33 +31,33 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <div className="App-container">
-          
-          {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
-          <Switch>
-            <Route path="/room/:roomID">
-              <Room />
-            </Route>
-            <Route path="/pose/:imageName">
-              <LogPose />
-            </Route>
-            <Route path="/">
-              <div className="home">
-                <Link to="/"><h1 className="display">PoseParty</h1></Link>
-                <h2>A social exercise game you can play while social distancing.</h2>
-                <h3>Create a room, invite some friends, and try your hardest to match the poses shown to you over the course of the game!</h3>
-                <Link to={`/room/${roomID}`}><div className="button display">Create a Room</div></Link>
-              </div>
-              <h1 className="display" style={{marginBottom: '20px'}}>Demo</h1>
-              <iframe width="640" height="360" src="https://www.youtube.com/embed/1ielsQyZPLU" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen="true"></iframe>
-            </Route>
-          </Switch>
-
-          
-        </div>
-      </Router>
+      <ToastProvider>
+        <Router>
+          <div className="App-container">
+            
+            {/* A <Switch> looks through its children <Route>s and
+                renders the first one that matches the current URL. */}
+            <Switch>
+              <Route path="/room/:roomID">
+                <Room />
+              </Route>
+              <Route path="/pose/:imageName">
+                <LogPose />
+              </Route>
+              <Route path="/">
+                <div className="home">
+                  <Link to="/"><h1 className="display">PoseParty</h1></Link>
+                  <h2>A social exercise game you can play while social distancing.</h2>
+                  <h3>Create a room, invite some friends, and try your hardest to match the poses shown to you over the course of the game!</h3>
+                  <Link to={`/room/${roomID}`}><div className="button display">Create a Room</div></Link>
+                </div>
+                <h1 className="display" style={{marginBottom: '20px'}}>Demo</h1>
+                <iframe width="640" height="360" src="https://www.youtube.com/embed/1ielsQyZPLU" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen="true"></iframe>
+              </Route>
+            </Switch>
+          </div>
+        </Router>
+      </ToastProvider>
     </div>
   );
 }
