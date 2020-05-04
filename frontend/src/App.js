@@ -48,11 +48,6 @@ function App() {
                 <h2>A social exercise game you can play while social distancing.</h2>
                 <h3>Create a room, invite some friends, and try your hardest to match the poses shown to you over the course of the game!</h3>
                 <Link to={`/room/${roomID}`}><div className="button display">Create a Room</div></Link>
-                <h2>Or</h2>
-                <div className="join">
-                  <input className="display" onChange={ e => setJoinURL(e.target.value) } placeholder="Room ID"></input>
-                  <Link to={`/room/${joinURL}`}><div className="button display secondary">Join a Room</div></Link>
-                </div>
               </div>
               <h1 className="display" style={{marginBottom: '20px'}}>Demo</h1>
               <iframe width="640" height="360" src="https://www.youtube.com/embed/1ielsQyZPLU" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen="true"></iframe>
