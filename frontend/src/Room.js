@@ -5,6 +5,9 @@ import { useToasts } from 'react-toast-notifications'
 import Video from 'twilio-video';
 import PoseNet from './posenet/components/PoseNet';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
+
 import Participant from './Participant';
 import { getTwilioToken } from './api_utils';
 import { poseSimilarity } from './posenet_utils';
@@ -31,6 +34,7 @@ function Room() {
   const [username, setUsername] = useState(null);
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
+  const [muted, setMuted] = useState(false);
   const { addToast } = useToasts()
   
   // Websockets
@@ -210,7 +214,7 @@ function Room() {
   }, [roomID, token]);
 
   const remoteParticipants = participants.map(participant => (
-    <Participant key={participant.sid} participant={participant} score={leaderboard[participant.identity]}/>
+    <Participant key={participant.sid} muted={muted} participant={participant} score={leaderboard[participant.identity]}/>
   ));
 
   /* ========================================= POSENET + SCORING ========================================= */
@@ -314,7 +318,7 @@ function Room() {
     <div className="room">
       <div className="header">
         <h1 className="title display"><a href="/">PoseParty</a></h1>
-        <h2>Send this link to your friends:
+        <h2 className="title">Send this link to your friends:
           <CopyToClipboard text={roomLink}
             onCopy={() => addToast('Copied link!', {
               appearance: 'info',
@@ -323,6 +327,9 @@ function Room() {
             <span style={{color: '#2ecc71', cursor: 'pointer'}}> { roomLink } </span>
           </CopyToClipboard>
         </h2>
+        <a className="mute-button" onClick={() => setMuted(!muted)}>
+          <FontAwesomeIcon icon={muted ? faVolumeMute : faVolumeUp} />
+        </a>
       </div>
 
       <div className="main-container">

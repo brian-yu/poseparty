@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer, score }) => {
+const Participant = ({ muted, participant, setVideoRef, setCanvasRef, isPlayer, score }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
 
@@ -79,7 +79,7 @@ const Participant = ({ participant, setVideoRef, setCanvasRef, isPlayer, score }
           </>
           : <video ref={videoRef} width="400" height="300" autoPlay={true} />
         }
-        <audio ref={audioRef} autoPlay={true} />
+        <audio ref={audioRef} autoPlay={true} muted={muted} />
         <div className='score-overlay'>{score}</div>
       </div>
     </div>

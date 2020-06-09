@@ -1,11 +1,10 @@
 .header {
-    padding: 0 50px;
+    margin: 0 auto;
+    max-width: 1300px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-}
-.title {
-    margin-right: 150px;
 }
 
 .hidden {
@@ -107,4 +106,8 @@
     color:white;
     border-radius: 4px;
 	transition: .4s;
+}
+
+.mute-button {
+    font-size: 20pt;
 }
