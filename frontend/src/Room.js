@@ -34,7 +34,7 @@ function Room() {
   const [username, setUsername] = useState(null);
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const { addToast } = useToasts()
   
   // Websockets
