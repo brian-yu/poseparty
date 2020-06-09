@@ -18,9 +18,9 @@ import POSE_MAP from './data/moves'; // maps image names to pose objects.
 
 import './Room.css';
 
-const SIMILARITY_THRESHOLD_EXCELLENT = 0.15;
-const SIMILARITY_THRESHOLD_GOOD = 0.45;
-const SIMILARITY_THRESHOLD_OKAY = 0.7;
+const SIMILARITY_THRESHOLD_EXCELLENT = 0.25;
+const SIMILARITY_THRESHOLD_GOOD = 0.55;
+const SIMILARITY_THRESHOLD_OKAY = 0.8;
 const GameStateEnum = Object.freeze({ Waiting: 1, Playing: 2, Finished: 3 });
 const RoundStateEnum = Object.freeze({ Started: 1, Ended: 2});
 
