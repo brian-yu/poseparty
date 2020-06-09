@@ -318,7 +318,7 @@ function Room() {
     <div className="room">
       <div className="header">
         <h1 className="title display"><a href="/">PoseParty</a></h1>
-        <h2 className="title">Send this link to your friends:
+        <h2>Send this link to your friends:
           <CopyToClipboard text={roomLink}
             onCopy={() => addToast('Copied link!', {
               appearance: 'info',
