@@ -55,6 +55,11 @@ function App() {
                 <iframe width="640" height="360" src="https://www.youtube.com/embed/1ielsQyZPLU" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen="true"></iframe>
               </Route>
             </Switch>
+            <div className="footer">
+              {/* <p>© PoseParty</p> */}
+              {/* <br/> */}
+              <a className="donate" target="#blank" href="https://www.buymeacoffee.com/E72czYb">☕ Buy us a coffee 😊</a>
+            </div>
           </div>
         </Router>
       </ToastProvider>
