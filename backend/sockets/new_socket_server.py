@@ -98,6 +98,7 @@ class Game:
 
         if len(self.players) == 0:
             await self.end()
+            logging.info('destroying game in room {}'.format(self.room))
             ROOMS.pop(self.room)
     
     def get_scores(self):
@@ -251,6 +252,9 @@ async def handler(request):
                 logging.error("unsupported event: {}".format(data))
     finally:
         logging.info('ws {} closed'.format(websocket))
+        if websocket in USERS:
+            game = USERS[websocket]
+            await game.remove_player(websocket)
 
 
 
