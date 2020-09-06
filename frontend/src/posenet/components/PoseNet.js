@@ -68,6 +68,7 @@ export default function PoseNet({
 
     return () => clearInterval(intervalID)
   }, [
+    input,
     frameRate,
     height,
     image,
