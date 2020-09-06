@@ -58,6 +58,10 @@ class Player:
     
     async def send(self, data):
         await self.websocket.send_str(json.dumps(data))
+    
+    def reset(self):
+        self.round_scores = []
+        self.ready = False
 
 class Game:
     def __init__(self, room):
@@ -75,6 +79,17 @@ class Game:
 
         logging.info('added player {} to game in room {}'.format(player.name, self.room))
     
+    async def restart(self):
+        for player in self.players.values():
+            player.reset()
+        self.current_round = 0
+        self.used_images = set()
+
+        await self.notify_players({
+            'action': 'RESTART_GAME',
+            'prevScores': {},
+        })
+    
     async def remove_player(self, websocket):
         if websocket not in self.players:
             return
@@ -83,6 +98,7 @@ class Game:
 
         if len(self.players) == 0:
             await self.end()
+            ROOMS.pop(self.room)
     
     def get_scores(self):
         return {
@@ -140,7 +156,6 @@ class Game:
             'totalRounds': self.total_rounds,
             'prevScores': self.get_scores(),
         })
-        ROOMS.pop(self.room)
         
 
     async def notify_players(self, data):
@@ -169,7 +184,8 @@ ws.send(JSON.stringify({action: 'FINISH_ROUND', room: '1', score: '5'}))
 '''
 
 async def join_or_create_game(websocket, room, name):
-    ROOMS.setdefault(room, Game(room))
+    if room not in ROOMS:
+        ROOMS[room] = Game(room)
     game = ROOMS[room]
     USERS[websocket] = game
     game.add_player(websocket, name)
@@ -224,6 +240,13 @@ async def handler(request):
                 game = ROOMS[room]
                 score = data['score']
                 await game.send_score(websocket, score)
+            elif data["action"] == "RESTART_GAME":
+                room = data['room']
+                if room not in ROOMS:
+                    logging.error("no game in room: {}".format(data))
+                    continue
+                game = ROOMS[room]
+                await game.restart()
             else:
                 logging.error("unsupported event: {}".format(data))
     finally:

@@ -17,6 +17,7 @@ import { SOCKET_HOST } from './constants';
 import POSE_MAP from './data/moves'; // maps image names to pose objects.
 
 import './Room.css';
+import { setOpHandler } from '@tensorflow/tfjs-core/dist/tensor';
 
 const SIMILARITY_THRESHOLD_EXCELLENT = 0.25;
 const SIMILARITY_THRESHOLD_GOOD = 0.55;
@@ -62,15 +63,6 @@ function Room() {
   const [imagePose, setImagePose] = useState(POSE_MAP[imageName]);
 
   const [similarity, setSimilarity] = useState();
-  
-  const getNextRoom = () => {
-    const lastChar = roomID[roomID.length - 1];
-    let newChar = String.fromCharCode(lastChar.charCodeAt() + 1)
-    if( /[^a-zA-Z0-9]/.test( newChar ) ) {
-      newChar = 'A';
-    }
-    return roomID.substring(0, roomID.length - 1) + newChar;
-  }
 
   /* ============================================ WEBSOCKETS ============================================ */
 
@@ -115,6 +107,27 @@ function Room() {
           setGameState(GameStateEnum.Finished);
           setReady(false);
           setLeaderboard(newLeaderboard);
+          break;
+        case 'RESTART_GAME':
+          console.log('RESTARTING GAME!', data);
+          if (gameState !== GameStateEnum.Finished) {
+            console.error('invalid game state transition');
+            return;
+          }
+          
+          // Reset game state.
+          setReady(false);
+          setGameState(GameStateEnum.Waiting);
+          setRoundState(RoundStateEnum.Ended);
+          setCurrentRound(0);
+          setTotalRounds(0);
+          setGameProgress(0);
+          setCorrectFrames(0);
+          setTotalFrames(0);
+          setLeaderboard({});
+          setImageName('tadasana.png');
+          setImagePose(POSE_MAP['tadasana.png']);
+
           break;
         default:
           console.log('Unrecognized game action!', data);
@@ -309,7 +322,12 @@ function Room() {
       <div className="game-over">
         <h1>Game Over!</h1>
         <h1>{bestPlayer} won with {leaderboard[bestPlayer]} points!</h1>
-        <a className="button display" href={`/room/${getNextRoom()}`}>Join a new room</a>
+        <a
+          className="button display"
+          onClick={() => sendMessage(JSON.stringify({action: 'RESTART_GAME', room: roomID}))}
+        >
+          Start a new game
+        </a>
       </div>
     );
   }
