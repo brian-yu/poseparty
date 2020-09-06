@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import PoseNet from './posenet/components/PoseNet';
 
@@ -14,7 +14,7 @@ function LogPose() {
     return (
         <>
             <h1>Logged pose for {imageName}</h1>
-            <img className="reference-img" 
+            <img className="reference-img" alt="pose to copy"
             ref={imageRef}
             src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
             { imageRef.current !== null && !poseLogged? 

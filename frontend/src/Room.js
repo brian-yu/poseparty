@@ -17,7 +17,6 @@ import { SOCKET_HOST } from './constants';
 import POSE_MAP from './data/moves'; // maps image names to pose objects.
 
 import './Room.css';
-import { setOpHandler } from '@tensorflow/tfjs-core/dist/tensor';
 
 const SIMILARITY_THRESHOLD_EXCELLENT = 0.25;
 const SIMILARITY_THRESHOLD_GOOD = 0.55;
@@ -133,7 +132,7 @@ function Room() {
           console.log('Unrecognized game action!', data);
       }
     }
-  }, [lastMessage]);
+  }, [gameState, lastMessage]);
 
   // Join the game
   useEffect(() => {
@@ -164,7 +163,7 @@ function Room() {
       // Should probably include round number here if we have the frame counts as dependencies
       sendMessage(JSON.stringify({ action: 'FINISH_ROUND', score, room: roomID})); 
     }
-  }, [correctFrames, totalFrames, gameState, readyState, roomID, roundState, sendMessage]);
+  }, [correctFrames, totalFrames, gameState, readyState, roomID, roundState, sendMessage, currentRound, totalRounds]);
 
   /* ============================================ TWILIO ============================================ */
 
@@ -264,7 +263,7 @@ function Room() {
         setCorrectFrames(correctFrames + 0.1);
       }
     }
-  }, [similarity, gameState, roundState]);
+  }, [similarity, gameState, roundState, totalFrames, correctFrames]);
 
   /* ============================================ RENDER ============================================ */
 
@@ -322,6 +321,7 @@ function Room() {
       <div className="game-over">
         <h1>Game Over!</h1>
         <h1>{bestPlayer} won with {leaderboard[bestPlayer]} points!</h1>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a
           className="button display"
           onClick={() => sendMessage(JSON.stringify({action: 'RESTART_GAME', room: roomID}))}
@@ -346,6 +346,7 @@ function Room() {
             <span style={{color: '#2ecc71', cursor: 'pointer'}}> { roomLink } </span>
           </CopyToClipboard>
         </h2>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a className="mute-button" onClick={() => setMuted(!muted)}>
           <FontAwesomeIcon icon={muted ? faVolumeMute : faVolumeUp} />
         </a>
@@ -357,6 +358,7 @@ function Room() {
           <GameOver /> :
           <img className="reference-img" 
             ref={imageRef}
+            alt="Yoga pose to copy."
             src={`${process.env.PUBLIC_URL}/img/poses/${imageName}`}/>
         }
 

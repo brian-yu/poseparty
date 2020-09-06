@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { ToastProvider } from 'react-toast-notifications'
 import {
   BrowserRouter as Router,
@@ -13,8 +13,6 @@ import { GLITCH_SOCKET_HTTP_HOST } from './constants';
 import './App.css';
 
 function App() {
-
-  const [joinURL, setJoinURL] = useState();
 
   // Ping Glitch socket server on startup 
   useEffect(() => {
@@ -48,7 +46,7 @@ function App() {
                 <div className="home">
                   <Link to="/"><h1 className="display">PoseParty</h1></Link>
                   <h2>A social exercise game you can play while social distancing.</h2>
-                  <img className="demo" height="300" src={`${process.env.PUBLIC_URL}/img/poseparty.gif`}/>
+                  <img className="demo" alt="Animated demo of PoseParty." height="300" src={`${process.env.PUBLIC_URL}/img/poseparty.gif`}/>
                   <Link to={`/room/${roomID}`}><div className="button display">Create a Room</div></Link>
                   <h3>Create a room, invite some friends, and try your hardest to match the poses shown to you over the course of the game!</h3>
                 </div>
@@ -59,7 +57,7 @@ function App() {
             <div className="footer">
               {/* <p>© PoseParty</p> */}
               {/* <br/> */}
-              <a className="donate" target="#blank" href="https://www.buymeacoffee.com/E72czYb">☕ Buy us a coffee 😊</a>
+              <a className="donate" target="#blank" href="https://www.buymeacoffee.com/E72czYb"><span role="img" aria-label="coffee">☕</span> Buy us a coffee <span role="img" aria-label="smiley">😊</span></a>
             </div>
           </div>
         </Router>

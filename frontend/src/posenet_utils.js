@@ -38,6 +38,7 @@ function cosineDistanceMatching(poseVector1, poseVector2) {
 // Values 34-51: are confidence values for each of the 17 body parts in alphabetical order
 // Value 51: A sum of all the confidence values
 // Again the lower the number, the closer the distance
+// eslint-disable-next-line no-unused-vars
 function weightedDistanceMatching(poseVector1, poseVector2) {
   const vector1PoseXY = poseVector1.slice(0, 34);
   const vector1Confidences = poseVector1.slice(34, 51);
