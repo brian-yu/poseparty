@@ -19,7 +19,8 @@ export default function PoseNet({
   minPoseConfidence,
   minPartConfidence,
   width,
-  height
+  height,
+  drawSkeleton
 }) {
   const videoRef = useRef()
   const canvasRef = useRef()
@@ -49,7 +50,7 @@ export default function PoseNet({
     const intervalID = setInterval(async () => {
       try {
         ctx.drawImage(videoRef.current, 0, 0, width, height)
-        if (!input && lastPose) {
+        if (!input && lastPose && drawSkeleton) {
           drawKeypoints(ctx, lastPose.keypoints)
         }
         const pose = await net.estimateSinglePose(image, inferenceConfigRef.current)
@@ -73,7 +74,8 @@ export default function PoseNet({
     minPartConfidence,
     minPoseConfidence,
     net,
-    width
+    width,
+    drawSkeleton
   ])
 
   return (
@@ -152,7 +154,8 @@ PoseNet.propTypes = {
   /** canvas width */
   width: PropTypes.number,
   /** canvas height */
-  height: PropTypes.number
+  height: PropTypes.number,
+  drawSkeleton: PropTypes.bool
 }
 
 PoseNet.defaultProps = {

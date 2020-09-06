@@ -113,6 +113,7 @@ function Room() {
             return;
           }
           setGameState(GameStateEnum.Finished);
+          setReady(false);
           setLeaderboard(newLeaderboard);
           break;
         default:
@@ -366,6 +367,7 @@ function Room() {
                   }}
                   onEstimate={(pose) => handlePose(pose)}
                   websocketReadyState={readyState}
+                  drawSkeleton={!ready}
                 />
                 <DisplayScore />
               </>

@@ -233,3 +233,4 @@ async def handler(request):
 
 app = web.Application()
 app.add_routes([web.get('/', handler)])
+web.run_app(app)
