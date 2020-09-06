@@ -357,7 +357,7 @@ function Room() {
           <GameOver /> :
           <img className="reference-img" 
             ref={imageRef}
-            src={`${process.env.PUBLIC_URL}/img/${imageName}`}/>
+            src={`${process.env.PUBLIC_URL}/img/poses/${imageName}`}/>
         }
 
         <div className="local-participant">

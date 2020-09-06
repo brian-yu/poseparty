@@ -42,7 +42,7 @@ p {
   align-items: center;
 }
 .home > * {
-  margin-bottom: 50px;
+  margin-bottom: 40px;
   max-width: 55%;
 }
 
@@ -89,7 +89,7 @@ input:focus {
 }
 
 .footer {
-  margin-top: 50px;
+  margin-top: 60px;
 }
 
 .donate {
@@ -98,6 +98,7 @@ input:focus {
   border-radius: 10px;
   padding: 10px;
   margin-top: 20px;
+  font-size: .8em;
 }
 
 .donate:hover {
