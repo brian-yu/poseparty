@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { useToasts } from 'react-toast-notifications'
 import Video from 'twilio-video';
@@ -27,6 +27,9 @@ const RoundStateEnum = Object.freeze({ Started: 1, Ended: 2});
 function Room() {
 
   /* ============================================ INIT STATE ============================================ */
+
+  // React router
+  const history = useHistory();
 
   // Room State
   const { roomID } = useParams();
@@ -128,11 +131,23 @@ function Room() {
           setImagePose(POSE_MAP['tadasana.png']);
 
           break;
+        case 'EXPIRE_GAME':
+          console.log('expiring game');
+          if (gameState !== GameStateEnum.Finished) {
+            console.error('invalid game state transition');
+            return;
+          }
+          history.push("/?msg=game_expired");
+          break;
+        case 'GAME_FULL':
+          console.log('game full');
+          window.location.href = "/?msg=game_full";
+          break;
         default:
           console.log('Unrecognized game action!', data);
       }
     }
-  }, [gameState, lastMessage]);
+  }, [gameState, lastMessage, history]);
 
   // Join the game
   useEffect(() => {

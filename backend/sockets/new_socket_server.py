@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-
+import argparse
 import asyncio
 import json
 import logging
-import websockets
 import random
 import ssl
-import argparse
-from aiohttp import web, WSMsgType
+from enum import Enum
+from threading import Timer
+
+import websockets
+from aiohttp import WSMsgType, web
 
 logging.basicConfig()
 
@@ -66,8 +68,15 @@ class Player:
         self.round_scores = []
         self.ready = False
 
+class GameState(Enum):
+    Waiting = 'waiting'
+    Playing = 'playing'
+    Finished = 'finished'
+
 class Game:
+    PLAYER_LIMIT = 10
     def __init__(self, room):
+        self.game_state = GameState.Waiting
         self.room = room
         self.total_rounds = 7 # maybe change later
         self.current_round = 0
@@ -76,15 +85,22 @@ class Game:
 
         self.used_images = set()
 
-    def add_player(self, websocket, name):
+    async def add_player(self, websocket, name):
         player = Player(websocket, self, name)
-        self.players[websocket] = player
 
-        logging.info('added player {} to game in room {}'.format(player.name, self.room))
+        if len(self.players) >= self.PLAYER_LIMIT:
+            await player.send({
+                'action': 'GAME_FULL',
+                'prevScores': {},
+            })
+        else:
+            self.players[websocket] = player
+            logging.info('added player {} to game in room {}'.format(player.name, self.room))
     
     async def restart(self):
         for player in self.players.values():
             player.reset()
+        self.game_state = GameState.Playing
         self.current_round = 0
         self.used_images = set()
 
@@ -118,7 +134,7 @@ class Game:
             await self.start_round()
     
     async def start_round(self):
-
+        self.game_state = GameState.Playing
         logging.info('starting round {} in room {}'.format(self.current_round, self.room))
 
         image = random.choice(IMAGE_NAMES)
@@ -154,13 +170,28 @@ class Game:
     async def end(self):
 
         logging.info('game ending in room {}'.format(self.room))
-
+        
+        self.game_state = GameState.Finished
+        
         await self.notify_players({
             'action': 'END_GAME',
             'totalRounds': self.total_rounds,
             'prevScores': self.get_scores(),
         })
-        
+
+        await self.expire()
+    
+    async def expire(self, timeout=60):
+
+        await asyncio.sleep(timeout)
+
+        if self.game_state == GameState.Finished:
+            logging.info('expiring game in room {}'.format(self.room))
+
+            await self.notify_players({
+                'action': 'EXPIRE_GAME',
+                'prevScores': {},
+            })
 
     async def notify_players(self, data):
         for _, player in self.players.items():
@@ -192,7 +223,7 @@ async def join_or_create_game(websocket, room, name):
         ROOMS[room] = Game(room)
     game = ROOMS[room]
     USERS[websocket] = game
-    game.add_player(websocket, name)
+    await game.add_player(websocket, name)
 
 async def handler(request):
     try:

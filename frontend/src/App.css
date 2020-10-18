@@ -104,3 +104,10 @@ input:focus {
 .donate:hover {
   background-color: brightness(70%);
 }
+
+.alert {
+  background-color: white;
+  color: #ff7979;
+  padding: 8px;
+  border-radius: 8px;
+}

@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { ToastProvider } from 'react-toast-notifications'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
 } from "react-router-dom";
 
 import Room from './Room';
@@ -14,12 +14,31 @@ import './App.css';
 
 function App() {
 
+  const [message, setMessage] = useState(null);
+
   // Ping Glitch socket server on startup 
   useEffect(() => {
     fetch(GLITCH_SOCKET_HTTP_HOST, {
       mode: 'no-cors'
     });
   }, []);
+
+  // Find any redirect messages on startup:
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const message_key = params.get("msg");
+    window.history.replaceState({}, document.title, '/')
+
+    // const messages
+    switch (message_key) {
+      case 'game_full':
+        setMessage('Sorry, the game you tried to join has reached the 10 person player limit.')
+        break;
+      case 'game_expired':
+        setMessage('Sorry, your room has expired due to inactivity.')
+        break;
+    }
+  })
 
   const generateRoomID = () => {
     return Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -44,6 +63,10 @@ function App() {
               </Route>
               <Route path="/">
                 <div className="home">
+                  {
+                    message ?
+                    <div className="alert">{message}</div> : null
+                  }
                   <Link to="/"><h1 className="display">PoseParty</h1></Link>
                   <h2>A social exercise game you can play while social distancing.</h2>
                   <img className="demo" alt="Animated demo of PoseParty." height="300" src={`${process.env.PUBLIC_URL}/img/poseparty.gif`}/>
