@@ -54,7 +54,8 @@ class Player:
     def __init__(self, websocket, game, name):
         self.websocket = websocket
         self.game = game
-        self.round_scores = []
+        # If a player joins in the second round (round 1), we want to give them a score of 0 for the first round.
+        self.round_scores = [0] * self.game.current_round 
         self.name = name
         self.ready = False
     
