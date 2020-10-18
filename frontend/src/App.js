@@ -37,8 +37,10 @@ function App() {
       case 'game_expired':
         setMessage('Sorry, your room has expired due to inactivity.')
         break;
+      default:
+        break;
     }
-  })
+  }, [message])
 
   const generateRoomID = () => {
     return Math.floor(Math.random() * 0xFFFFFF).toString(16);
